@@ -7,15 +7,14 @@ class Menu:
         self.startGame = False
 
         #seting menu
-        Button(300, 64, 64, 32, "seting", soundChange, name= "sound")
+        Button(300, 64, 173, 32, "seting", soundChange, name= "sound")
         self.soundOn = True
-        Button(480, 64, 64, 32, "seting", StartGame, name= "skin")
-        Button(608, 64, 64, 32, "seting", self.main, name= "back to menu")
+        Button(500, 64, 208, 32, "seting", self.main, name= "back to menu")
 
         #main menu
-        Button(384, 32, 64, 32, "main", StartGame, name= "play")
-        Button(480, 32, 64, 32, "main", StartGame, name= "skin")
-        Button(608, 32, 64, 32, "main", self.seting, name= "setings")
+        Button(384, 32, 76, 32, "main", StartGame, name= "play")
+        Button(480, 32, 76, 32, "main", StartGame, name= "skin")
+        Button(608, 32, 128, 32, "main", self.seting, name= "setings")
         self.main()
         
         
@@ -45,7 +44,8 @@ class Button:
 
     def render(self):
         if self.show:
-            font = pygame.font.Font('freesansbold.ttf', 32)
+            textRect = pygame.Rect(self.react.x + 8, self.react.y + 8, self.react.width - 16, self.react.height - 16)
+            font = pygame.font.Font('./img/PressStart2P-Regular.ttf', 16)
             if self.name == "sound":
                 if not menu.soundOn:
                     text = font.render("Sound: Off", True, "green")
@@ -55,10 +55,10 @@ class Button:
                 text = font.render(self.name, True, "green")
             if self.mouseOn:
                 pygame.draw.rect(screen, (255, 255, 255), self.react, border_radius= 10)
-                screen.blit(text, self.react)
+                screen.blit(text, textRect)
             else:
                 pygame.draw.rect(screen, (0, 0, 0), self.react, border_radius= 10)
-                screen.blit(text, self.react)
+                screen.blit(text, textRect)
 
     def update(self):
         if self.coolDown > 0:
