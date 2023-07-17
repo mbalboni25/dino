@@ -35,7 +35,7 @@ while running:
     # updates the player (location)
 
     # fill the screen with a color to wipe away anything from last frame
-    screen.fill("black")
+    screen.fill((183, 201, 226))
 
     # RENDER GAME HERE
 
