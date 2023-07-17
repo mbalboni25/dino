@@ -91,6 +91,8 @@ buttons = []
 
 pygame.init()
 screen = pygame.display.set_mode((1024, 256))
+pygame.display.set_caption('Dino')
+pygame.display.set_icon(pygame.image.load('./img/green cactus.png'))
 clock = pygame.time.Clock()
 menu = Menu()
 dt = 0
