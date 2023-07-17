@@ -7,6 +7,11 @@ import pygame
 # this list will hold all of the objects it is named after.
 # by going throug these list with a for loop you can run a condition on all instencesn of a class
 
+# place to set up the leval
+pygame.init()
+screen = pygame.display.set_mode((1024, 256))
+clock = pygame.time.Clock()
+dt = 0
 
 # place to set up the leval
 
