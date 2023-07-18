@@ -93,7 +93,7 @@ class Cloud:
         if self.x <= -150:
             clouds.remove(self)
         else:
-            self.x -= 8 * (100 / (self.y + 50)) * dt
+            self.x -= (8 * (100 / (self.y + 50)) * dino.speed/100) * dt
             self.nextCloudIn -= 1
             if len(clouds) < 10:
                 if self.nextCloudIn == 0:
