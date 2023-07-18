@@ -64,10 +64,13 @@ class Cloud:
         if self.x <= -150:
             clouds.remove(self)
         else:
-            self.x -= 8 * dt
+            self.x -= 8 * (100/(self.y + 50)) * dt
             self.nextCloudIn -= 1
-            if self.nextCloudIn == 0:
-                Cloud()
+            if len(clouds) < 10:
+                if self.nextCloudIn == 0:
+                    Cloud()
+            elif self.nextCloudIn == 0:
+                self.nextCloudIn = 1
             self.render()
 
 
