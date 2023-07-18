@@ -14,9 +14,9 @@ dino_img1 = pygame.image.load(os.path.join(img, "dino/frame1.png"))
 dino_img2= pygame.image.load(os.path.join(img, "dino/frame2.png")) 
 dino_img3 = pygame.image.load(os.path.join(img, "dino/frame3.png"))  
 # ducking fram  
-dino_ducking_img1 = pygame.image.load(os.path.join(img, "dino/ducking_frame1.png"))  
-dino_ducking_img2 = pygame.image.load(os.path.join(img, "dino/ducking_frame2.png")) 
-dino_ducking_img2 = pygame.image.load(os.path.join(img, "dino/ducking_frame3.png"))  
+dino_ducking_img1 = pygame.image.load(os.path.join(img, "dino/duck_frame1.png"))  
+dino_ducking_img2 = pygame.image.load(os.path.join(img, "dino/duck_frame2.png")) 
+dino_ducking_img2 = pygame.image.load(os.path.join(img, "dino/duck_frame3.png"))  
 
 ground_img = pygame.image.load(os.path.join(img, "ground.png"))
 scaled_ground_img = pygame.transform.scale(ground_img, (2048, 69.5))
