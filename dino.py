@@ -141,6 +141,8 @@ class Button:
 # Dino class made by Sophie
 class Dino:
     def __init__(self):
+        #how fast dino moves in the x direction
+        self.speed = 10
         # Attribute initalizers
         self.image = COLOR
         # switches between ducking and standing states
@@ -148,7 +150,7 @@ class Dino:
         # checks if the dino is jumping or not
         self.on_ground = True
         # controls the dino jump (essentially y velocity)
-        self.speed = 0
+        self.velocityY = 0
 
         # sets up with defaults
         self.x = START_X
@@ -160,29 +162,29 @@ class Dino:
     # brings the dino up
     def jump(self):
         self.on_ground = False
-        self.speed = -7  # adjust as necessary to change the power of the jump
+        self.velocityY = -7  # adjust as necessary to change the power of the jump
 
     # drags the dino back down if it's in the air
     def gravity(self):
         if self.on_ground:
-            self.speed = 0
+            self.velocityY = 0
             self.y = (
                 START_Y + 1
             )  # the +1 is just to make sure the code registers that the two boxes are touching
         else:
             # adjust as necessary to change the falling speed
-            self.speed += 16 * dt
+            self.velocityY += 16 * dt
 
             # if the dino ducks while jumping, speed increases
             if not dino.is_standing:
-                self.speed += 32 * dt  # 10 is hardcoded arbitrary extra fall
+                self.velocityY += 32 * dt  # 10 is hardcoded arbitrary extra fall
         # speed limit
-        if self.speed > 25:
-            self.speed = 25
+        if self.velocityY > 25:
+            self.velocityY = 25
 
     def adjust(self):
         if not self.on_ground:
-            self.y += self.speed + 1
+            self.y += self.velocityY + 1
             if self.y > START_Y:
                 self.y = START_Y + 1
 
@@ -219,6 +221,8 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Dino")
 pygame.display.set_icon(pygame.image.load("./img/green cactus.png"))
 clock = pygame.time.Clock()
+# dino!
+dino = Dino()
 menu = Menu()
 
 dt = 0
@@ -258,8 +262,7 @@ while not menu.startGame:
     # independent physics.
     dt = clock.tick(60) / 1000
 
-# dino!
-dino = Dino()
+
 
 while menu.running:
     # poll for events
