@@ -9,7 +9,14 @@ from random import randint
 img = os.path.dirname(os.path.abspath("/Users/patetoman/Documents/Git/dino/img/cloud.png"))
 
 # Load the image using the correct file path
-Cloud_img = pygame.image.load(os.path.join(img, "cloud.png"))
+Cloud_img = pygame.image.load(os.path.join(img, "cloud.png")) 
+dino_img1 = pygame.image.load(os.path.join(img, "dino/frame1.png"))
+dino_img2= pygame.image.load(os.path.join(img, "dino/frame2.png")) 
+dino_img3 = pygame.image.load(os.path.join(img, "dino/frame3.png"))  
+# ducking fram  
+dino_ducking_img1 = pygame.image.load(os.path.join(img, "dino/ducking_frame1.png"))  
+dino_ducking_img2 = pygame.image.load(os.path.join(img, "dino/ducking_frame2.png")) 
+dino_ducking_img2 = pygame.image.load(os.path.join(img, "dino/ducking_frame3.png"))  
 
 ground_img = pygame.image.load(os.path.join(img, "ground.png"))
 scaled_ground_img = pygame.transform.scale(ground_img, (2048, 69.5))
@@ -147,7 +154,8 @@ class Button:
                 screen.blit(text, textRect)
             else:
                 pygame.draw.rect(screen, (0, 0, 0), self.react, border_radius=10)
-                screen.blit(text, textRect)
+                screen.blit(text, textRect) 
+            
 
     def update(self):
         if self.coolDown > 0:
@@ -230,7 +238,17 @@ class Dino:
 
     def draw(self):
         # simple for now but may adjust later when we add the images of the dino
-        pygame.draw.rect(screen, self.image, self.box)
+        pygame.draw.rect(screen, self.image, self.box)  
+        # loads image of dino skin ( walking)  
+        img = os.path.dirname(os.path.abspath("/Users/patetoman/Documents/Git/dino/img/cloud.png"))
+        dino_img = pygame.image.load(os.path.join(img, "dino/frame1.png"))
+        dino_img2= pygame.image.load(os.path.join(img, "dino/frame2.png")) 
+        dino_img3 = pygame.image.load(os.path.join(img, "dino/frame3.png"))  
+        # ducking fram 
+
+
+    
+    
 
 
 # this list will hold all of the objects it is named after.
