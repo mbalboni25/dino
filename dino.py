@@ -6,18 +6,19 @@ from random import randint
 # Initializing imgs
 
 # Get the current working directory
-current_dir = os.path.dirname(os.path.abspath("/Users/mbalboni/Downloads/img/cloud.png"))
+img = os.path.dirname(os.path.abspath("/Users/patetoman/Documents/Git/dino/img/cloud.png"))
 
 # Load the image using the correct file path
-Cloud_img = pygame.image.load(os.path.join(current_dir, "cloud.png"))
+Cloud_img = pygame.image.load(os.path.join(img, "cloud.png"))
 
-ground_img = pygame.image.load("./img/ground.png")
+ground_img = pygame.image.load(os.path.join(img, "ground.png"))
+scaled_ground_img = pygame.transform.scale(ground_img, (2048, 69.5))
 
 # Setup variables
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 256
 START_X = 120
-START_Y = 208
+START_Y = 220
 COLOR = (30, 230, 230)  # color is just a temporary replacement for the actual dino imgs
 
 # hit boxes for the standing and ducking dino
@@ -103,13 +104,13 @@ class Cloud:
 
 class Ground:
     def __init__(self) -> None:
-        self.x = 6600
+        self.x = 0
     
     def render(self):
         self.x -= (10 + dino.speed/100) * dt
-        if self.x <= 5576:
-            self.x = 6600
-        screen.blit(ground_img, (self.x, 200))
+        if self.x <= -1024:
+            self.x = 0
+        screen.blit(scaled_ground_img, (self.x, 187))
 
         
 
@@ -241,7 +242,7 @@ clouds = []
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Dino")
-pygame.display.set_icon(pygame.image.load("./img/green cactus.png"))
+pygame.display.set_icon(pygame.image.load(os.path.join(img, "green cactus.png")))
 clock = pygame.time.Clock()
 ground = Ground()
 # dino!
@@ -318,12 +319,13 @@ while menu.running:
     screen.fill((183, 201, 226))
 
     # RENDER GAME HERE
+    ground.render()
 
     if len(clouds) == 0:
         Cloud()
     for cloud in clouds:
         cloud.update()
-    pygame.draw.rect(screen, 0, GROUND_RECT)
+    #pygame.draw.rect(screen, 0, GROUND_RECT)
     dino.draw()
 
     # flip() the display to put your work on screen
