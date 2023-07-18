@@ -4,6 +4,7 @@ from random import randint
 
 # Initializing imgs
 Cloud_img = pygame.image.load("./img/cloud.png")
+ground_img = pygame.image.load("./img/ground.png")
 
 # Setup variables
 SCREEN_WIDTH = 1024
@@ -90,6 +91,18 @@ class Cloud:
             elif self.nextCloudIn == 0:
                 self.nextCloudIn = 1
             self.render()
+
+class Ground:
+    def __init__(self) -> None:
+        self.x = 6600
+    
+    def render(self):
+        self.x -= (10 + dino.speed/100) * dt
+        if self.x <= 5576:
+            self.x = 6600
+        screen.blit(ground_img, (self.x, 200))
+
+        
 
 
 class Button:
@@ -221,9 +234,11 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Dino")
 pygame.display.set_icon(pygame.image.load("./img/green cactus.png"))
 clock = pygame.time.Clock()
+ground = Ground()
 # dino!
 dino = Dino()
 menu = Menu()
+
 
 dt = 0
 
@@ -244,6 +259,9 @@ while not menu.startGame:
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill((183, 201, 226))
+
+    ground.render()
+
     if len(clouds) == 0:
         Cloud()
     for cloud in clouds:
