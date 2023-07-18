@@ -1,9 +1,16 @@
 # import modules here
-import pygame
+import pygame 
+import os 
 from random import randint
 
 # Initializing imgs
-Cloud_img = pygame.image.load("./img/cloud.png")
+
+# Get the current working directory
+current_dir = os.path.dirname(os.path.abspath("/Users/mbalboni/Downloads/img/cloud.png"))
+
+# Load the image using the correct file path
+Cloud_img = pygame.image.load(os.path.join(current_dir, "cloud.png"))
+
 ground_img = pygame.image.load("./img/ground.png")
 
 # Setup variables
@@ -21,7 +28,9 @@ DUCK_H = 20
 
 
 # CAN's CODE
-# Classes for the game startup menu, buttons, and helper functions for the opening screen
+# Classes for the game startup menu, buttons, and helper functions for the opening screen 
+
+
 
 
 class Menu:
