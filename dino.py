@@ -22,6 +22,7 @@ DUCK_H = 20
 # CAN's CODE
 # Classes for the game startup menu, buttons, and helper functions for the opening screen
 
+
 class Menu:
     def __init__(self) -> None:
         for i in range(3):
@@ -71,13 +72,13 @@ class Cloud:
         self.y = randint(0, 100)
         self.x = x
         self.nextCloudIn = randint(300 * len(clouds), 600 * len(clouds))
+        scale = 1 + (randint(-50, 50) / 100)
+        self.Cloud_img = pygame.transform.scale(Cloud_img, (159 * scale, 57 * scale))
 
     def render(self):
-        print("hi")
-        screen.blit(Cloud_img, (self.x, self.y))
+        screen.blit(self.Cloud_img, (self.x, self.y))
 
     def update(self):
-        print(f"self.x= {self.x}")
         if self.x <= -150:
             clouds.remove(self)
         else:
@@ -136,10 +137,10 @@ class Button:
                     self.coolDown = 15
                     self.func()
 
-#Dino class made by Sophie
-class Dino():
-    def __init__(self):
 
+# Dino class made by Sophie
+class Dino:
+    def __init__(self):
         # Attribute initalizers
         self.image = COLOR
         # switches between ducking and standing states
@@ -165,7 +166,9 @@ class Dino():
     def gravity(self):
         if self.on_ground:
             self.speed = 0
-            self.y = START_Y + 1  # the +1 is just to make sure the code registers that the two boxes are touching
+            self.y = (
+                START_Y + 1
+            )  # the +1 is just to make sure the code registers that the two boxes are touching
         else:
             # adjust as necessary to change the falling speed
             self.speed += 16 * dt
@@ -173,17 +176,17 @@ class Dino():
             # if the dino ducks while jumping, speed increases
             if not dino.is_standing:
                 self.speed += 32 * dt  # 10 is hardcoded arbitrary extra fall
-        #speed limit
+        # speed limit
         if self.speed > 25:
             self.speed = 25
 
     def adjust(self):
         if not self.on_ground:
-            self.y += self.speed+1
-            if self.y>START_Y:
-                self.y = START_Y+1
+            self.y += self.speed + 1
+            if self.y > START_Y:
+                self.y = START_Y + 1
 
-        #switches between states
+        # switches between states
         if dino.is_standing:
             dino.w = STAND_W
             dino.h = STAND_H
@@ -193,16 +196,15 @@ class Dino():
 
         self.make_box()
 
-    #Makes the RECT for the dino
-    #self.x is CENTERED
-    #self.y is represents the BOTTOM
-    #makes the rect represent the top left corner
+    # Makes the RECT for the dino
+    # self.x is CENTERED
+    # self.y is represents the BOTTOM
+    # makes the rect represent the top left corner
     def make_box(self):
-        self.box = pygame.Rect(self.x-self.w/2, self.y-self.h, self.w, self.h)
+        self.box = pygame.Rect(self.x - self.w / 2, self.y - self.h, self.w, self.h)
 
     def draw(self):
-
-        #simple for now but may adjust later when we add the images of the dino
+        # simple for now but may adjust later when we add the images of the dino
         pygame.draw.rect(screen, self.image, self.box)
 
 
@@ -218,13 +220,13 @@ pygame.display.set_caption("Dino")
 pygame.display.set_icon(pygame.image.load("./img/green cactus.png"))
 clock = pygame.time.Clock()
 menu = Menu()
+
 dt = 0
 
 
 # sets up the ground rect spanning the entire width of the screen
 GROUND_RECT = pygame.Rect(0, START_Y, SCREEN_WIDTH, 20)
-#dino!
-dino = Dino()
+
 
 while not menu.startGame:
     # poll for events
@@ -256,6 +258,9 @@ while not menu.startGame:
     # independent physics.
     dt = clock.tick(60) / 1000
 
+# dino!
+dino = Dino()
+
 while menu.running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -263,24 +268,27 @@ while menu.running:
         if event.type == pygame.QUIT:
             menu.running = False
 
-    #setup
+    # setup
     keys = pygame.key.get_pressed()
 
-    #First check if dino is on the ground and standing
+    # First check if dino is on the ground and standing
     dino.on_ground = dino.box.colliderect(GROUND_RECT)
     dino.is_standing = not keys[pygame.K_DOWN]
 
-    #make adjustments to dino
+    # make adjustments to dino
     dino.gravity()
-    if (keys[pygame.K_SPACE] and dino.on_ground and dino.is_standing):
+    if keys[pygame.K_SPACE] and dino.on_ground and dino.is_standing:
         dino.jump()
 
-    #implement adjustments
+    # implement adjustments
     dino.adjust()
 
     # RENDER GAME HERE
     # fill the screen with a color to wipe away anything from last frame
     screen.fill((183, 201, 226))
+
+    # RENDER GAME HERE
+
     if len(clouds) == 0:
         Cloud()
     for cloud in clouds:
