@@ -54,13 +54,14 @@ class Cloud:
         self.y = randint(0, 100)
         self.x = x
         self.nextCloudIn = randint(300 * len(clouds), 600 * len(clouds))
+        scale = 1+(randint(-50, 50)/100) 
+        print(f"{scale}x")
+        self.Cloud_img = pygame.transform.scale(Cloud_img, (159 * scale, 57 * scale))
 
     def render(self):
-        print("hi")
-        screen.blit(Cloud_img, (self.x, self.y))
+        screen.blit(self.Cloud_img, (self.x, self.y))
 
     def update(self):
-        print(f"self.x= {self.x}")
         if self.x <= -150:
             clouds.remove(self)
         else:
