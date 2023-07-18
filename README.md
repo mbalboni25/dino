@@ -49,7 +49,11 @@ _Below is an example of how you can instruct your audience on installing and set
    ```sh
    pip install pygame
    ```
-4. run the program
+4. cd in to dino
+   ```sh
+   cd dino
+   ```
+5. run the program
    ```sh
    python dino.py
    ```
