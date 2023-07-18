@@ -1,19 +1,36 @@
-# import moduls here
+# import modules here
 import pygame
 from random import randint
 
+# Initializing imgs
 Cloud_img = pygame.image.load("./img/cloud.png")
 
+# Setup variables
+SCREEN_WIDTH = 1024
+SCREEN_HEIGHT = 256
+START_X = 120
+START_Y = 208
+COLOR = (30, 230, 230)  # color is just a temporary replacement for the actual dino imgs
+
+# hit boxes for the standing and ducking dino
+STAND_W = 20
+STAND_H = 50
+DUCK_W = 50
+DUCK_H = 20
+
+
+# CAN's CODE
+# Classes for the game startup menu, buttons, and helper functions for the opening screen
 
 class Menu:
     def __init__(self) -> None:
         for i in range(3):
-            Cloud(randint(0,1024))
-        # loop variabls
+            Cloud(randint(0, 1024))
+        # loop variables
         self.running = True
         self.startGame = False
 
-        # seting menu
+        # setings menu
         Button(300, 64, 173, 32, "seting", soundChange, name="sound")
         self.soundOn = True
         Button(500, 64, 208, 32, "seting", self.main, name="back to menu")
@@ -54,18 +71,17 @@ class Cloud:
         self.y = randint(0, 100)
         self.x = x
         self.nextCloudIn = randint(300 * len(clouds), 600 * len(clouds))
-        scale = 1+(randint(-50, 50)/100) 
-        print(f"{scale}x")
-        self.Cloud_img = pygame.transform.scale(Cloud_img, (159 * scale, 57 * scale))
 
     def render(self):
-        screen.blit(self.Cloud_img, (self.x, self.y))
+        print("hi")
+        screen.blit(Cloud_img, (self.x, self.y))
 
     def update(self):
+        print(f"self.x= {self.x}")
         if self.x <= -150:
             clouds.remove(self)
         else:
-            self.x -= 8 * (100/(self.y + 50)) * dt
+            self.x -= 8 * (100 / (self.y + 50)) * dt
             self.nextCloudIn -= 1
             if len(clouds) < 10:
                 if self.nextCloudIn == 0:
@@ -120,16 +136,84 @@ class Button:
                     self.coolDown = 15
                     self.func()
 
+#Dino class made by Sophie
+class Dino():
+    def __init__(self):
+
+        # Attribute initalizers
+        self.image = COLOR
+        # switches between ducking and standing states
+        self.is_standing = True
+        # checks if the dino is jumping or not
+        self.on_ground = True
+        # controls the dino jump (essentially y velocity)
+        self.speed = 0
+
+        # sets up with defaults
+        self.x = START_X
+        self.y = START_Y
+        self.w = STAND_W
+        self.h = STAND_H
+        self.make_box()
+
+    # brings the dino up
+    def jump(self):
+        self.on_ground = False
+        self.speed = -7  # adjust as necessary to change the power of the jump
+
+    # drags the dino back down if it's in the air
+    def gravity(self):
+        if self.on_ground:
+            self.speed = 0
+            self.y = START_Y + 1  # the +1 is just to make sure the code registers that the two boxes are touching
+        else:
+            # adjust as necessary to change the falling speed
+            self.speed += 16 * dt
+
+            # if the dino ducks while jumping, speed increases
+            if not dino.is_standing:
+                self.speed += 32 * dt  # 10 is hardcoded arbitrary extra fall
+        #speed limit
+        if self.speed > 25:
+            self.speed = 25
+
+    def adjust(self):
+        if not self.on_ground:
+            self.y += self.speed+1
+            if self.y>START_Y:
+                self.y = START_Y+1
+
+        #switches between states
+        if dino.is_standing:
+            dino.w = STAND_W
+            dino.h = STAND_H
+        else:
+            dino.w = DUCK_W
+            dino.h = DUCK_H
+
+        self.make_box()
+
+    #Makes the RECT for the dino
+    #self.x is CENTERED
+    #self.y is represents the BOTTOM
+    #makes the rect represent the top left corner
+    def make_box(self):
+        self.box = pygame.Rect(self.x-self.w/2, self.y-self.h, self.w, self.h)
+
+    def draw(self):
+
+        #simple for now but may adjust later when we add the images of the dino
+        pygame.draw.rect(screen, self.image, self.box)
+
 
 # this list will hold all of the objects it is named after.
 # by going throug these list with a for loop you can run a condition on all instencesn of a class
-
 # place to set up the leval
 buttons = []
 clouds = []
 
 pygame.init()
-screen = pygame.display.set_mode((1024, 256))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Dino")
 pygame.display.set_icon(pygame.image.load("./img/green cactus.png"))
 clock = pygame.time.Clock()
@@ -137,8 +221,10 @@ menu = Menu()
 dt = 0
 
 
-# Example file showing a basic pygame "game loop"
-
+# sets up the ground rect spanning the entire width of the screen
+GROUND_RECT = pygame.Rect(0, START_Y, SCREEN_WIDTH, 20)
+#dino!
+dino = Dino()
 
 while not menu.startGame:
     # poll for events
@@ -170,7 +256,6 @@ while not menu.startGame:
     # independent physics.
     dt = clock.tick(60) / 1000
 
-
 while menu.running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -178,21 +263,30 @@ while menu.running:
         if event.type == pygame.QUIT:
             menu.running = False
 
+    #setup
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_a] or keys[pygame.K_LEFT] and not player.onLaddder:
-        friction = False
-        player.setVelocityX("a")
 
-    # updates the player (location)
+    #First check if dino is on the ground and standing
+    dino.on_ground = dino.box.colliderect(GROUND_RECT)
+    dino.is_standing = not keys[pygame.K_DOWN]
 
+    #make adjustments to dino
+    dino.gravity()
+    if (keys[pygame.K_SPACE] and dino.on_ground and dino.is_standing):
+        dino.jump()
+
+    #implement adjustments
+    dino.adjust()
+
+    # RENDER GAME HERE
     # fill the screen with a color to wipe away anything from last frame
     screen.fill((183, 201, 226))
     if len(clouds) == 0:
         Cloud()
     for cloud in clouds:
         cloud.update()
-    
-    # RENDER GAME HERE
+    pygame.draw.rect(screen, 0, GROUND_RECT)
+    dino.draw()
 
     # flip() the display to put your work on screen
     pygame.display.flip()
