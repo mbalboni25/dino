@@ -67,16 +67,16 @@ class Menu:
         self.startGame = False
 
         #standing animations
-        self.run_img1 = pygame.transform.scale(dino_img2,(50, 50))
-        self.run_img2 = pygame.transform.scale(dino_img3,(50, 50))
+        self.run_img1 = pygame.transform.scale(dino_img2,(75, 75))
+        self.run_img2 = pygame.transform.scale(dino_img3,(75, 75))
 
         #ducking animations
-        self.duck_img1 = dino_ducking_img2
-        self.duck_img2 = dino_ducking_img3
+        self.duck_img1 = pygame.transform.scale(dino_ducking_img2,(100, 50))
+        self.duck_img2 = pygame.transform.scale(dino_ducking_img3,(100, 50))
 
         #jumping animations
-        self.jump_img1 = pygame.transform.scale(dino_img1,(50, 50))
-        self.jump_img2 = dino_ducking_img1
+        self.jump_img1 = pygame.transform.scale(dino_img1,(75, 75))
+        self.jump_img2 = pygame.transform.scale(dino_ducking_img1,(100, 50))
 
 
         # Loading all the buttons for
@@ -170,7 +170,7 @@ class Ground:
     render(self) -> None: moves the ground and then puts it onto the screen
     """
     def __init__(self) -> None:
-        self.rect = pygame.Rect(0, START_Y + 50, SCREEN_WIDTH, 20)
+        self.rect = pygame.Rect(0, START_Y + STAND_H, SCREEN_WIDTH, 20)
         self.x = 0
 
     def render(self) -> None:
@@ -250,6 +250,7 @@ class Dino:
     def __init__(self):
         self.frameTime = 15
         self.usedFrame = menu.run_img1
+        self.usedFrame_duck = menu.duck_img1
         # how fast dino moves in the x direction
         self.speed = 10
         # Attribute initalizers
@@ -301,22 +302,24 @@ class Dino:
         self.frameTime -= 1
         if self.frameTime <= 0:
             self.frameTime = 15
-            if self.is_standing:
-                if not self.on_ground:
-                    self.usedFrame = menu.jump_img1
-                elif self.usedFrame == menu.run_img1:
-                    self.usedFrame = menu.run_img2
-                elif self.usedFrame == menu.run_img2:
-                    self.usedFrame = menu.run_img1
-            else:
-                if not self.on_ground:
-                    self.usedFrame = menu.jump_img2
-                elif self.usedFrame == menu.duck_img1:
-                    self.usedFrame = menu.duck_img2
-                elif self.usedFrame == menu.duck_img2:
-                    self.usedFrame = menu.duck_img1
-            
-        screen.blit(self.usedFrame, (self.rect.x - 20, self.rect.y))
+            if not self.on_ground:
+                self.usedFrame = menu.jump_img1
+            elif self.usedFrame == menu.run_img1 or self.usedFrame == menu.jump_img1:
+                self.usedFrame = menu.run_img2
+            elif self.usedFrame == menu.run_img2:
+                self.usedFrame = menu.run_img1
+            if not self.on_ground:
+                self.usedFrame_duck = menu.jump_img2
+            elif self.usedFrame_duck == menu.duck_img1:
+                self.usedFrame_duck = menu.duck_img2
+            elif self.usedFrame_duck == menu.duck_img2:
+                self.usedFrame_duck = menu.duck_img1
+        
+        if self.is_standing:
+            screen.blit(self.usedFrame, (self.rect.x, self.rect.y ))
+        else:
+            screen.blit(self.usedFrame_duck, (self.rect.x, self.rect.y))
+
 
 
 # this list will hold all of the objects it is named after.
@@ -393,8 +396,8 @@ while menu.running:
 
     # make updatements to dino
     dino.gravity()
-    print(f"{(keys[pygame.K_SPACE] or keys[pygame.K_UP]) and dino.on_ground and not keys[pygame.K_DOWN]}")
-    if (keys[pygame.K_SPACE] or keys[pygame.K_UP]) and dino.on_ground and not keys[pygame.K_DOWN]:
+    dino.is_standing = not keys[pygame.K_DOWN]
+    if (keys[pygame.K_SPACE] or keys[pygame.K_UP]) and dino.on_ground and dino.is_standing:
         dino.jump()
     
     dino.update()
