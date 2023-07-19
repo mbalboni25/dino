@@ -1,4 +1,9 @@
+## ABOUT THE TEAM 
+Programmers: Can Pekkan; Sophie Wang; Nikolas Negron 
+Game Designer: Rena Plankis 
+Manager and presentation designer:Mia Balboni 
 
+Tufts Coding Academy 2023 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
@@ -65,4 +70,10 @@ In order to run this program you will need python installed on your laptop or de
 1. select skin
 2. Go back to home screen and select "play"
 3. Use the space bar to jump over the obstacles and use the down arrow to duck to avoid higher obstacles
-4. As you progress through the game, the speed will increase therefore making Dino Dash harder 
+4. As you progress through the game, the speed will increase therefore making Dino Dash harder
+
+
+
+#Troubleshooting 
+If the dino does not stop while touching a obstacle, close the application and reopen 
+
