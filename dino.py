@@ -6,20 +6,20 @@ from random import randint
 # Initializing imgs
 
 # Get the current working directory
-img = os.path.dirname(
-    os.path.abspath("/Users/patetoman/Documents/Git/dino/img/cloud.png")
-)
+# img = os.path.dirname(
+#    os.path.abspath("/Users/patetoman/Documents/Git/dino/img/cloud.png")
+#)
 
 
 img = "img"
 # Load Dino
-dino_img1 = pygame.image.load( "./img/dino/frame1.png")
-dino_img2 = pygame.image.load( "./img/dino/frame2.png")
-dino_img3 = pygame.image.load( "./img/dino/frame3.png")
+dino_img1 = pygame.image.load(os.path.join(img, "dino", "frame1.png")) # TODO like this on all similar lines
+dino_img2 = pygame.image.load(os.path.join(img, "dino", "frame2.png"))
+dino_img3 = pygame.image.load(os.path.join(img, "dino", "frame3.png"))
 # Load ducking Dino
-dino_ducking_img1 = pygame.image.load("./img/dino/duck_frame1.png")
-dino_ducking_img2 = pygame.image.load("./img/dino/duck_frame2.png")
-dino_ducking_img3 = pygame.image.load("./img/dino/duck_frame3.png")
+dino_ducking_img1 = pygame.image.load(os.path.join(img, "dino", "duck_frame1.png"))
+dino_ducking_img2 = pygame.image.load(os.path.join(img, "dino", "duck_frame2.png"))
+dino_ducking_img3 = pygame.image.load(os.path.join(img, "dino", "duck_frame3.png"))
 
 # Load the image cloud
 Cloud_img = pygame.image.load("./img/cloud.png")
