@@ -33,14 +33,14 @@ scaled_ground_img = pygame.transform.scale(ground_img, (2048, 69.5))
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 256
 START_X = 120
-START_Y = 180
+START_Y = 220
 COLOR = (30, 230, 230)  # color is just a temporary replacement for the actual dino imgs
 
 # hit boxes for the standing and ducking dino
-STAND_W = 20
-STAND_H = 50
-DUCK_W = 50
-DUCK_H = 20
+STAND_W = 75
+STAND_H = 75
+DUCK_W = 100
+DUCK_H = 50
 
 
 # CAN's CODE
@@ -170,7 +170,7 @@ class Ground:
     render(self) -> None: moves the ground and then puts it onto the screen
     """
     def __init__(self) -> None:
-        self.rect = pygame.Rect(0, START_Y + STAND_H, SCREEN_WIDTH, 20)
+        self.rect = pygame.Rect(0, START_Y, SCREEN_WIDTH, 20)
         self.x = 0
 
     def render(self) -> None:
@@ -257,32 +257,48 @@ class Dino:
         self.image = COLOR
         # switches between ducking and standing states
         self.is_standing = True
+        self.was_standing = True
         # checks if the dino is jumping or not
         self.on_ground = True
         # controls the dino jump (essentially y velocity)
         self.velocityY = 0
 
         # sets up with defaults
-        self.rect = pygame.Rect(START_X, START_Y, STAND_W, STAND_H)
+        self.rect = pygame.Rect(START_X, START_Y - STAND_H, STAND_W, STAND_H)
     # brings the dino up
     def jump(self):
         self.velocityY = -7  # update as necessary to change the power of the jump
 
     # drags the dino back down if it's in the air
     def gravity(self):
-        # update as necessary to change the falling speed
-        self.velocityY += 16 * dt
-        # if the dino ducks while jumping, speed increases
-        if not self.is_standing:
-            self.velocityY += 32 * dt  # 10 is hardcoded arbitrary extra fall
-        # speed limit
-        if self.velocityY > 25:
-            self.velocityY = 25
-        
+        if dino.is_standing:
+            self.rect.width = STAND_W
+            self.rect.height = STAND_H
+            if not self.was_standing:
+                self.rect.y -= 25
+            self.was_standing = True
+
+        else:
+            self.rect.width = DUCK_W
+            self.rect.height = DUCK_H
+            if self.was_standing:
+                self.rect.y += 25
+            self.was_standing = False
         self.on_ground = False
         if self.rect.colliderect(ground.rect):
             self.on_ground = True
             self.velocityY = 0
+            self.rect.bottom = ground.rect.top
+        elif not self.on_ground:
+            # update as necessary to change the falling speed
+            self.velocityY += 16 * dt
+            # if the dino ducks while jumping, speed increases
+            if not self.is_standing:
+                self.velocityY += 32 * dt  # 10 is hardcoded arbitrary extra fall
+            # speed limit
+            if self.velocityY > 25:
+                self.velocityY = 25
+
         
 
     def update(self):
@@ -298,10 +314,10 @@ class Dino:
 
     def draw(self):
         # simple for now but may update later when we add the images of the dino
-        pygame.draw.rect(screen, self.image, self.rect)
+        #pygame.draw.rect(screen, self.image, self.rect)
         self.frameTime -= 1
         if self.frameTime <= 0:
-            self.frameTime = 15
+            self.frameTime = 10
             if not self.on_ground:
                 self.usedFrame = menu.jump_img1
             elif self.usedFrame == menu.run_img1 or self.usedFrame == menu.jump_img1:
@@ -310,7 +326,7 @@ class Dino:
                 self.usedFrame = menu.run_img1
             if not self.on_ground:
                 self.usedFrame_duck = menu.jump_img2
-            elif self.usedFrame_duck == menu.duck_img1:
+            elif self.usedFrame_duck == menu.duck_img1 or self.usedFrame_duck == menu.jump_img2:
                 self.usedFrame_duck = menu.duck_img2
             elif self.usedFrame_duck == menu.duck_img2:
                 self.usedFrame_duck = menu.duck_img1
@@ -395,11 +411,11 @@ while menu.running:
 
 
     # make updatements to dino
-    dino.gravity()
     dino.is_standing = not keys[pygame.K_DOWN]
+
     if (keys[pygame.K_SPACE] or keys[pygame.K_UP]) and dino.on_ground and dino.is_standing:
         dino.jump()
-    
+    dino.gravity()
     dino.update()
 
     # implement updatements
