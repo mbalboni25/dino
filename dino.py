@@ -170,7 +170,7 @@ class Ground:
     render(self) -> None: moves the ground and then puts it onto the screen
     """
     def __init__(self) -> None:
-        self.rect = pygame.Rect(0, START_Y, SCREEN_WIDTH, 20)
+        self.rect = pygame.Rect(0, START_Y + 50, SCREEN_WIDTH, 20)
         self.x = 0
 
     def render(self) -> None:
