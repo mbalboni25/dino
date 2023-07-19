@@ -1,6 +1,8 @@
 ## ABOUT THE TEAM 
-Programmers: Can Pekkan; Sophie Wang; Nikolas Negron 
+Programmers: Can Pekkan; Sophie Wang; Nikolas Negron
+
 Game Designer: Rena Plankis 
+
 Manager and presentation designer:Mia Balboni 
 
 Tufts Coding Academy 2023 
