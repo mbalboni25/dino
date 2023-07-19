@@ -16,7 +16,7 @@ what did we add:
 * you can now change your character's skin  
 * and a new main menu :smile:
 
-Of course, no single template will serve all projects since your needs may be different. So we will be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+
 
 Use the `BLANK_README.md` to get started.
 
