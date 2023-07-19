@@ -1,15 +1,22 @@
+## ABOUT THE TEAM 
+Programmers: Can Pekkan; Sophie Wang; Nikolas Negron
 
+Game Designer: Rena Plankis 
+
+Manager and presentation designer:Mia Balboni 
+
+Tufts Coding Academy 2023 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-we created a clone of the Dino game otherwise known as the "no Internet game". the orignal gamecan be accessed by inputting chrome://dino or chrome://network-error/-106 into the Omnibox.
+We created a clone of the T-Rex Dinosaur Game otherwise known as the "no Internet game". The orignal game can be accessed by inputting chrome://dino or chrome://network-error/-106 into the Omnibox.
 
 what did we add:
-* new Updated grapics 
-* you can now change your character 
+* new Updated and colorful grapics 
+* you can now change your character's skin  
 * and a new main menu :smile:
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+
 
 Use the `BLANK_README.md` to get started.
 
@@ -19,7 +26,7 @@ Use the `BLANK_README.md` to get started.
 
 ### Built With
 
-we used pygame and random libarys to bulid this python program.
+We used pygame and random libarys to bulid this python program.
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -29,7 +36,7 @@ we used pygame and random libarys to bulid this python program.
 <!-- GETTING STARTED -->
 ## Getting Started
 
-to run this you will need python
+In order to run this program you will need python installed on your laptop or desktop. 
 
 ### Prerequisites
 
@@ -41,7 +48,6 @@ to run this you will need python
 
 ### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
 
 1. downlode dino.zip
 2. expand dino.zip
@@ -62,7 +68,14 @@ _Below is an example of how you can instruct your audience on installing and set
 
 
 
-<!-- USAGE EXAMPLES -->
-## Usage
+#how to play  
+1. select skin
+2. Go back to home screen and select "play"
+3. Use the space bar to jump over the obstacles and use the down arrow to duck to avoid higher obstacles
+4. As you progress through the game, the speed will increase therefore making Dino Dash harder
 
-to play dino with better grapics
+
+
+#Troubleshooting 
+If the dino does not stop while touching a obstacle, close the application and reopen 
+
