@@ -6,25 +6,22 @@ from random import randint
 # Initializing imgs
 
 # Get the current working directory
-img = os.path.dirname(
-    os.path.abspath("/Users/patetoman/Documents/Git/dino/img/cloud.png")
-)
 
 
 # Load Dino
-dino_img1 = pygame.image.load(os.path.join(img, "dino/frame1.png"))
-dino_img2 = pygame.image.load(os.path.join(img, "dino/frame2.png"))
-dino_img3 = pygame.image.load(os.path.join(img, "dino/frame3.png"))
+dino_img1 = pygame.image.load( "./img/dino/frame1.png")
+dino_img2 = pygame.image.load( "./img/dino/frame2.png")
+dino_img3 = pygame.image.load( "./img/dino/frame3.png")
 # Load ducking Dino
-dino_ducking_img1 = pygame.image.load(os.path.join(img, "dino/duck_frame1.png"))
-dino_ducking_img2 = pygame.image.load(os.path.join(img, "dino/duck_frame2.png"))
-dino_ducking_img2 = pygame.image.load(os.path.join(img, "dino/duck_frame3.png"))
+dino_ducking_img1 = pygame.image.load("./img/dino/duck_frame1.png")
+dino_ducking_img2 = pygame.image.load("./img/dino/duck_frame2.png")
+dino_ducking_img3 = pygame.image.load("./img/dino/duck_frame3.png")
 
 # Load the image cloud
-Cloud_img = pygame.image.load(os.path.join(img, "cloud.png"))
+Cloud_img = pygame.image.load("./img/cloud.png")
 
 # Load ground
-ground_img = pygame.image.load(os.path.join(img, "ground.png"))
+ground_img = pygame.image.load("./img/ground.png")
 # resize rhe ground
 scaled_ground_img = pygame.transform.scale(ground_img, (2048, 69.5))
 
@@ -32,7 +29,7 @@ scaled_ground_img = pygame.transform.scale(ground_img, (2048, 69.5))
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 256
 START_X = 120
-START_Y = 220
+START_Y = 180
 COLOR = (30, 230, 230)  # color is just a temporary replacement for the actual dino imgs
 
 # hit boxes for the standing and ducking dino
@@ -64,6 +61,19 @@ class Menu:
         # loop variables
         self.running = True
         self.startGame = False
+
+        #standing animations
+        self.run_img1 = pygame.transform.scale(dino_img2,(50, 50))
+        self.run_img2 = pygame.transform.scale(dino_img3,(50, 50))
+
+        #ducking animations
+        self.duck_img1 = dino_ducking_img2
+        self.duck_img2 = dino_ducking_img3
+
+        #jumping animations
+        self.jump_img1 = pygame.transform.scale(dino_img1,(50, 50))
+        self.jump_img2 = dino_ducking_img1
+
 
         # Loading all the buttons for
 
@@ -156,6 +166,7 @@ class Ground:
     render(self) -> None: moves the ground and then puts it onto the screen
     """
     def __init__(self) -> None:
+        self.rect = pygame.Rect(0, START_Y, SCREEN_WIDTH, 20)
         self.x = 0
 
     def render(self) -> None:
@@ -233,6 +244,8 @@ class Dino:
     methods: 
     """
     def __init__(self):
+        self.frameTime = 15
+        self.usedFrame = menu.run_img1
         # how fast dino moves in the x direction
         self.speed = 10
         # Attribute initalizers
@@ -245,69 +258,61 @@ class Dino:
         self.velocityY = 0
 
         # sets up with defaults
-        self.x = START_X
-        self.y = START_Y
-        self.w = STAND_W
-        self.h = STAND_H
-        self.make_box()
-
+        self.rect = pygame.Rect(START_X, START_Y, STAND_W, STAND_H)
     # brings the dino up
     def jump(self):
-        self.on_ground = False
-        self.velocityY = -7  # adjust as necessary to change the power of the jump
+        self.velocityY = -7  # update as necessary to change the power of the jump
 
     # drags the dino back down if it's in the air
     def gravity(self):
-        if self.on_ground:
-            self.velocityY = 0
-            self.y = (
-                START_Y + 1
-            )  # the +1 is just to make sure the code registers that the two boxes are touching
-        else:
-            # adjust as necessary to change the falling speed
-            self.velocityY += 16 * dt
-
-            # if the dino ducks while jumping, speed increases
-            if not dino.is_standing:
-                self.velocityY += 32 * dt  # 10 is hardcoded arbitrary extra fall
+        # update as necessary to change the falling speed
+        self.velocityY += 16 * dt
+        # if the dino ducks while jumping, speed increases
+        if not self.is_standing:
+            self.velocityY += 32 * dt  # 10 is hardcoded arbitrary extra fall
         # speed limit
         if self.velocityY > 25:
             self.velocityY = 25
+        
+        self.on_ground = False
+        if self.rect.colliderect(ground.rect):
+            self.on_ground = True
+            self.velocityY = 0
+        
 
-    def adjust(self):
-        if not self.on_ground:
-            self.y += self.velocityY + 1
-            if self.y > START_Y:
-                self.y = START_Y + 1
+    def update(self):
+        self.rect.y += self.velocityY
 
         # switches between states
-        if dino.is_standing:
-            dino.w = STAND_W
-            dino.h = STAND_H
-        else:
-            dino.w = DUCK_W
-            dino.h = DUCK_H
-
-        self.make_box()
+        
 
     # Makes the RECT for the dino
     # self.x is CENTERED
     # self.y is represents the BOTTOM
     # makes the rect represent the top left corner
-    def make_box(self):
-        self.box = pygame.Rect(self.x - self.w / 2, self.y - self.h, self.w, self.h)
 
     def draw(self):
-        # simple for now but may adjust later when we add the images of the dino
-        pygame.draw.rect(screen, self.image, self.box)
-        # loads image of dino skin ( walking)
-        img = os.path.dirname(
-            os.path.abspath("/Users/patetoman/Documents/Git/dino/img/cloud.png")
-        )
-        dino_img = pygame.image.load(os.path.join(img, "dino/frame1.png"))
-        dino_img2 = pygame.image.load(os.path.join(img, "dino/frame2.png"))
-        dino_img3 = pygame.image.load(os.path.join(img, "dino/frame3.png"))
-        # ducking fram
+        # simple for now but may update later when we add the images of the dino
+        pygame.draw.rect(screen, self.image, self.rect)
+        self.frameTime -= 1
+        if self.frameTime <= 0:
+            self.frameTime = 15
+            if self.is_standing:
+                if not self.on_ground:
+                    self.usedFrame = menu.jump_img1
+                elif self.usedFrame == menu.run_img1:
+                    self.usedFrame = menu.run_img2
+                elif self.usedFrame == menu.run_img2:
+                    self.usedFrame = menu.run_img1
+            else:
+                if not self.on_ground:
+                    self.usedFrame = menu.jump_img2
+                elif self.usedFrame == menu.duck_img1:
+                    self.usedFrame = menu.duck_img2
+                elif self.usedFrame == menu.duck_img2:
+                    self.usedFrame = menu.duck_img1
+            
+        screen.blit(self.usedFrame, (self.rect.x - 20, self.rect.y))
 
 
 # this list will hold all of the objects it is named after.
@@ -319,19 +324,19 @@ clouds = []
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Dino")
-pygame.display.set_icon(pygame.image.load(os.path.join(img, "green cactus.png")))
+pygame.display.set_icon(pygame.image.load("./img/green cactus.png"))
 clock = pygame.time.Clock()
 ground = Ground()
 # dino!
-dino = Dino()
 menu = Menu()
+dino = Dino()
+
 
 
 dt = 0
 
 
 # sets up the ground rect spanning the entire width of the screen
-GROUND_RECT = pygame.Rect(0, START_Y, SCREEN_WIDTH, 20)
 
 
 while not menu.startGame:
@@ -379,16 +384,19 @@ while menu.running:
     keys = pygame.key.get_pressed()
 
     # First check if dino is on the ground and standing
-    dino.on_ground = dino.box.colliderect(GROUND_RECT)
-    dino.is_standing = not keys[pygame.K_DOWN]
+    
 
-    # make adjustments to dino
+
+    # make updatements to dino
     dino.gravity()
-    if keys[pygame.K_SPACE] and dino.on_ground and dino.is_standing:
+    print(f"{(keys[pygame.K_SPACE] or keys[pygame.K_UP]) and dino.on_ground and not keys[pygame.K_DOWN]}")
+    if (keys[pygame.K_SPACE] or keys[pygame.K_UP]) and dino.on_ground and not keys[pygame.K_DOWN]:
         dino.jump()
+    
+    dino.update()
 
-    # implement adjustments
-    dino.adjust()
+    # implement updatements
+
 
     # RENDER GAME HERE
     # fill the screen with a color to wipe away anything from last frame
