@@ -1,24 +1,31 @@
 # import modules here
-import pygame 
-import os 
+import pygame
+import os
 from random import randint
 
 # Initializing imgs
 
 # Get the current working directory
-img = os.path.dirname(os.path.abspath("/Users/patetoman/Documents/Git/dino/img/cloud.png"))
+img = os.path.dirname(
+    os.path.abspath("/Users/patetoman/Documents/Git/dino/img/cloud.png")
+)
 
-# Load the image using the correct file path
-Cloud_img = pygame.image.load(os.path.join(img, "cloud.png")) 
+
+# Load Dino
 dino_img1 = pygame.image.load(os.path.join(img, "dino/frame1.png"))
-dino_img2= pygame.image.load(os.path.join(img, "dino/frame2.png")) 
-dino_img3 = pygame.image.load(os.path.join(img, "dino/frame3.png"))  
-# ducking fram  
-dino_ducking_img1 = pygame.image.load(os.path.join(img, "dino/duck_frame1.png"))  
-dino_ducking_img2 = pygame.image.load(os.path.join(img, "dino/duck_frame2.png")) 
-dino_ducking_img2 = pygame.image.load(os.path.join(img, "dino/duck_frame3.png"))  
+dino_img2 = pygame.image.load(os.path.join(img, "dino/frame2.png"))
+dino_img3 = pygame.image.load(os.path.join(img, "dino/frame3.png"))
+# Load ducking Dino
+dino_ducking_img1 = pygame.image.load(os.path.join(img, "dino/duck_frame1.png"))
+dino_ducking_img2 = pygame.image.load(os.path.join(img, "dino/duck_frame2.png"))
+dino_ducking_img2 = pygame.image.load(os.path.join(img, "dino/duck_frame3.png"))
 
+# Load the image cloud
+Cloud_img = pygame.image.load(os.path.join(img, "cloud.png"))
+
+# Load ground
 ground_img = pygame.image.load(os.path.join(img, "ground.png"))
+# resize rhe ground
 scaled_ground_img = pygame.transform.scale(ground_img, (2048, 69.5))
 
 # Setup variables
@@ -36,18 +43,29 @@ DUCK_H = 20
 
 
 # CAN's CODE
-# Classes for the game startup menu, buttons, and helper functions for the opening screen 
-
-
+# Classes for the game startup menu, buttons, and helper functions for the opening screen
 
 
 class Menu:
+    """
+    propertes: 
+    running: make false to close the game
+    startGame: starts the game
+    soundOn: shows if the sound is on
+
+    metods: 
+    seting(self) -> None: hides all butons and then shows only seting menu buttons
+    main(self) -> None: hides all butons and then shows only main menu buttons
+    """
+
     def __init__(self) -> None:
         for i in range(3):
             Cloud(randint(0, 1024))
         # loop variables
         self.running = True
         self.startGame = False
+
+        # Loading all the buttons for
 
         # setings menu
         Button(300, 64, 173, 32, "seting", soundChange, name="sound")
@@ -60,13 +78,19 @@ class Menu:
         Button(608, 32, 128, 32, "main", self.seting, name="setings")
         self.main()
 
-    def seting(self):
+    def seting(self) -> None:
+        """
+        shows only buttons in the settings window
+        """
         for button in buttons:
             button.show = False
             if button.window == "seting":
                 button.show = True
 
-    def main(self):
+    def main(self) -> None:
+        """
+        shows only buttons in the main window
+        """
         for button in buttons:
             button.show = False
             if button.window == "main":
@@ -74,10 +98,12 @@ class Menu:
 
 
 def StartGame():
+    # function for the starting button that starts the game
     menu.startGame = True
 
 
 def soundChange():
+    # function for the sound button that changes the sound from off to on and viceversa
     if menu.soundOn:
         menu.soundOn = False
     else:
@@ -85,22 +111,33 @@ def soundChange():
 
 
 class Cloud:
+    """
+    propertes: 
+    clouds: a list of all clouds
+    x: the x cordinat of the cloud
+    y: the y cordinat of the cloud
+    nextCloudIn: the time it will take for this cloud to genaret a new one
+    Cloud_img: a randomly scaled cloud img
+    methods: 
+    render(self) -> None: renders the cloud
+    update(self) -> None: moves the cloud on the x directon, if the cloud is out of the window it despawns it, also calls render() and creats new clouds if nextCloudIn is = to 0
+    """
     def __init__(self, x=1024):
         clouds.append(self)
-        self.y = randint(0, 100)
         self.x = x
+        self.y = randint(0, 100)
         self.nextCloudIn = randint(300 * len(clouds), 600 * len(clouds))
         scale = 1 + (randint(-50, 50) / 100)
         self.Cloud_img = pygame.transform.scale(Cloud_img, (159 * scale, 57 * scale))
 
-    def render(self):
+    def render(self) -> None:
         screen.blit(self.Cloud_img, (self.x, self.y))
 
-    def update(self):
+    def update(self) -> None:
         if self.x <= -150:
             clouds.remove(self)
         else:
-            self.x -= (8 * (100 / (self.y + 50)) * dino.speed/100) * dt
+            self.x -= (8 * (100 / (self.y + 50)) * dino.speed / 100) * dt
             self.nextCloudIn -= 1
             if len(clouds) < 10:
                 if self.nextCloudIn == 0:
@@ -109,20 +146,41 @@ class Cloud:
                 self.nextCloudIn = 1
             self.render()
 
+
 class Ground:
+    """
+    propertes: 
+    x: the x cordinet of the ground
+
+    methods: 
+    render(self) -> None: moves the ground and then puts it onto the screen
+    """
     def __init__(self) -> None:
         self.x = 0
-    
-    def render(self):
-        self.x -= (10 + dino.speed/100) * dt
+
+    def render(self) -> None:
+        self.x -= (10 + dino.speed / 100) * dt
         if self.x <= -1024:
             self.x = 0
         screen.blit(scaled_ground_img, (self.x, 187))
 
-        
-
 
 class Button:
+    """
+    propertes: 
+    buttons: a List of all buttons
+    react: the button hitbox (a pygame.rect)
+    coolDown: button coldown to stop instantanus clicking 
+    func: function given to the button to exacute 
+    window: which menu window the button is in
+    name: the text that is displayed on the button
+    mouseOn: boolen that shows if the mous is on the button
+    show: shows the button
+
+    methods: 
+    render(self) -> None: Renders the button whith text placed on the button
+    update(self) -> None: checks if the button is clicked
+    """
     def __init__(self, x, y, width, height, window, func, name="Button") -> None:
         buttons.append(self)
         self.react = pygame.Rect(x, y, width, height)
@@ -133,7 +191,7 @@ class Button:
         self.mouseOn = False
         self.show = False
 
-    def render(self):
+    def render(self) -> None:
         if self.show:
             textRect = pygame.Rect(
                 self.react.x + 8,
@@ -154,10 +212,9 @@ class Button:
                 screen.blit(text, textRect)
             else:
                 pygame.draw.rect(screen, (0, 0, 0), self.react, border_radius=10)
-                screen.blit(text, textRect) 
-            
+                screen.blit(text, textRect)
 
-    def update(self):
+    def update(self) -> None:
         if self.coolDown > 0:
             self.coolDown -= 1
         elif self.show:
@@ -171,8 +228,12 @@ class Button:
 
 # Dino class made by Sophie
 class Dino:
+    """
+    propertes: 
+    methods: 
+    """
     def __init__(self):
-        #how fast dino moves in the x direction
+        # how fast dino moves in the x direction
         self.speed = 10
         # Attribute initalizers
         self.image = COLOR
@@ -238,17 +299,15 @@ class Dino:
 
     def draw(self):
         # simple for now but may adjust later when we add the images of the dino
-        pygame.draw.rect(screen, self.image, self.box)  
-        # loads image of dino skin ( walking)  
-        img = os.path.dirname(os.path.abspath("/Users/patetoman/Documents/Git/dino/img/cloud.png"))
+        pygame.draw.rect(screen, self.image, self.box)
+        # loads image of dino skin ( walking)
+        img = os.path.dirname(
+            os.path.abspath("/Users/patetoman/Documents/Git/dino/img/cloud.png")
+        )
         dino_img = pygame.image.load(os.path.join(img, "dino/frame1.png"))
-        dino_img2= pygame.image.load(os.path.join(img, "dino/frame2.png")) 
-        dino_img3 = pygame.image.load(os.path.join(img, "dino/frame3.png"))  
-        # ducking fram 
-
-
-    
-    
+        dino_img2 = pygame.image.load(os.path.join(img, "dino/frame2.png"))
+        dino_img3 = pygame.image.load(os.path.join(img, "dino/frame3.png"))
+        # ducking fram
 
 
 # this list will hold all of the objects it is named after.
@@ -309,7 +368,6 @@ while not menu.startGame:
     dt = clock.tick(60) / 1000
 
 
-
 while menu.running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -343,7 +401,7 @@ while menu.running:
         Cloud()
     for cloud in clouds:
         cloud.update()
-    #pygame.draw.rect(screen, 0, GROUND_RECT)
+    # pygame.draw.rect(screen, 0, GROUND_RECT)
     dino.draw()
 
     # flip() the display to put your work on screen
