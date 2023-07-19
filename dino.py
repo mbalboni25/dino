@@ -6,11 +6,11 @@ from random import randint
 # Initializing imgs
 
 # Get the current working directory
-img = os.path.dirname(
-    os.path.abspath("/Users/patetoman/Documents/Git/dino/img/cloud.png")
-)
+#img = os.path.dirname(
+   # os.path.abspath("/Users/patetoman/Documents/Git/dino/img/cloud.png")
 
 
+img = "img"
 # Load Dino
 dino_img1 = pygame.image.load(os.path.join(img, "dino/frame1.png"))
 dino_img2 = pygame.image.load(os.path.join(img, "dino/frame2.png"))
