@@ -547,10 +547,10 @@ def main():
         # First check if dino is on the ground and standing
 
         # make updatements to dino
-        dino.is_standing = not keys[pygame.K_DOWN]
+        dino.is_standing = not (keys[pygame.K_DOWN] or keys[pygame.K_s])
 
         if (
-            (keys[pygame.K_SPACE] or keys[pygame.K_UP])
+            (keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_w])
             and dino.on_ground
             and dino.is_standing
         ):
@@ -679,3 +679,5 @@ while menu.running:
     # dt is delta time in seconds since last frame, used for framerate-
     # independent physics.
     dt = clock.tick(60) / 1000
+
+pygame.quit()
