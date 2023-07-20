@@ -27,6 +27,11 @@ dino_ducking_img1 = pygame.image.load(os.path.join(img, "dino", "duck_frame1.png
 dino_ducking_img2 = pygame.image.load(os.path.join(img, "dino", "duck_frame2.png"))
 dino_ducking_img3 = pygame.image.load(os.path.join(img, "dino", "duck_frame3.png"))
 
+# Load ditto
+ditto_img1 = pygame.image.load(os.path.join(img, "ditto", "frame1.png"))
+ditto_img2 = pygame.image.load(os.path.join(img, "ditto", "frame2.png"))
+ditto_img3 = pygame.image.load(os.path.join(img, "ditto", "frame3.png"))
+
 obs_green = pygame.image.load(os.path.join(img, "green cactus.png"))
 obs_yellow = pygame.image.load(os.path.join(img, "yellow cactus.png"))
 green_img = pygame.transform.scale(obs_green,(35, 70))
@@ -76,7 +81,23 @@ class Menu:
         # loop variables
         self.running = True
         self.startGame = False
+        
+        self.setDino()
 
+        # Loading all the buttons for
+
+        # setings menu
+        Button(300, 64, 173, 32, "setting", skinChange, name="skinChange")
+        Button(500, 64, 208, 32, "setting", self.main, name="back to menu")
+
+        # main menu
+        self.logoShow = True
+        Button(350, 50, 76, 32, "main", StartGame, name="play")
+        # Button(480, 32, 76, 32, "main", StartGame, name="skin")
+        Button(350, 95, 140, 32, "main", self.setting, name="settings")
+        self.main()
+    
+    def setDino(self):
         #standing animations
         self.run_img1 = pygame.transform.scale(dino_img2,(75, 75))
         self.run_img2 = pygame.transform.scale(dino_img3,(75, 75))
@@ -88,21 +109,22 @@ class Menu:
         #jumping animations
         self.jump_img1 = pygame.transform.scale(dino_img1,(75, 75))
         self.jump_img2 = pygame.transform.scale(dino_ducking_img1,(100, 50))
-
-
-        # Loading all the buttons for
-
-        # setings menu
-        Button(300, 64, 173, 32, "setting", soundChange, name="sound")
-        self.soundOn = True
-        Button(500, 64, 208, 32, "setting", self.main, name="back to menu")
-
-        # main menu
-        self.logoShow = True
-        Button(350, 50, 76, 32, "main", StartGame, name="play")
-        # Button(480, 32, 76, 32, "main", StartGame, name="skin")
-        Button(350, 95, 140, 32, "main", self.setting, name="settings")
-        self.main()
+        self.skin = "dino"
+    
+    def setDitto(self):
+        #standing animations
+        self.run_img1 = pygame.transform.scale(ditto_img2,(75, 81.25))
+        self.run_img2 = pygame.transform.scale(ditto_img3,(75, 81.25))
+        """
+        #ducking animations
+        self.duck_img1 = pygame.transform.scale(ditto_ducking_img2,(100, 50))
+        self.duck_img2 = pygame.transform.scale(ditto_ducking_img3,(100, 50))
+        """
+        #jumping animations
+        self.jump_img1 = pygame.transform.scale(ditto_img1,(75, 81.25))
+        # self.jump_img2 = pygame.transform.scale(ditto_ducking_img1,(100, 50))
+        
+        self.skin = "ditto"
 
     def setting(self) -> None:
         """
@@ -130,12 +152,14 @@ def StartGame():
     menu.startGame = True
 
 
-def soundChange():
-    # function for the sound button that changes the sound from off to on and viceversa
-    if menu.soundOn:
-        menu.soundOn = False
+def skinChange():
+    # function for the skin button that changes the skin from off to on and viceversa
+    if menu.skin == "dino":
+        menu.skin = "ditto"
+        menu.setDitto()
     else:
-        menu.soundOn = True
+        menu.skin = "dino"
+        menu.setDino()
 
 
 class Cloud:
@@ -229,11 +253,11 @@ class Button:
                 self.react.height - 16,
             )
             font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
-            if self.name == "sound":
-                if not menu.soundOn:
-                    text = font.render("Sound: Off", True, "yellow")
+            if self.name == "skinChange":
+                if menu.skin == "dino":
+                    text = font.render("Skin: dino", True, "yellow")
                 else:
-                    text = font.render("Sound: On", True, "yellow")
+                    text = font.render("Skin: ditto", True, "yellow")
             else:
                 text = font.render(self.name, True, "yellow")
             if self.mouseOn:
@@ -403,7 +427,7 @@ class Dino:
 
     def draw(self):
         # simple for now but may update later when we add the images of the dino
-        # pygame.draw.rect(screen, self.image, self.rect)
+        pygame.draw.rect(screen, self.image, self.rect)
         self.frameTime -= 1
         if self.frameTime <= 0:
             self.frameTime = 10
@@ -443,7 +467,6 @@ clock = pygame.time.Clock()
 ground = Ground()
 # dino!
 menu = Menu()
-dino = Dino()
 
 obstacles = []
 
@@ -492,6 +515,8 @@ while not menu.startGame:
     # independent physics.
     dt = clock.tick(60) / 1000
 
+
+dino = Dino()
 dino.speed = 150
 
 while menu.running:
