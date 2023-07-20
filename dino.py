@@ -352,7 +352,7 @@ clouds = []
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Dino")
+pygame.display.set_caption("                                                                                                                                                                                                                                                                            Dino Dash")
 pygame.display.set_icon(logo_img)
 logo_img = pygame.transform.scale(logo_img, (153, 134))
 clock = pygame.time.Clock()
