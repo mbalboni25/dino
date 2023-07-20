@@ -68,7 +68,7 @@ In order to run this program you will need python installed on your laptop or de
 
 
 
-#how to play  
+# How To Play  
 1. select skin
 2. Go back to home screen and select "play"
 3. Use the space bar to jump over the obstacles and use the down arrow to duck to avoid higher obstacles
@@ -76,6 +76,6 @@ In order to run this program you will need python installed on your laptop or de
 
 
 
-#Troubleshooting 
+# Troubleshooting 
 If the dino does not stop while touching a obstacle, close the application and reopen 
 

@@ -3,6 +3,8 @@ import pygame
 import os
 from random import randint
 
+import pygame.draw_py
+
 # Initializing imgs
 
 # Get the current working directory
@@ -25,11 +27,16 @@ dino_ducking_img1 = pygame.image.load(os.path.join(img, "dino", "duck_frame1.png
 dino_ducking_img2 = pygame.image.load(os.path.join(img, "dino", "duck_frame2.png"))
 dino_ducking_img3 = pygame.image.load(os.path.join(img, "dino", "duck_frame3.png"))
 
+obs_green = pygame.image.load(os.path.join(img, "green cactus.png"))
+obs_yellow = pygame.image.load(os.path.join(img, "yellow cactus.png"))
+green_img = pygame.transform.scale(obs_green,(35, 70))
+yellow_img = pygame.transform.scale(obs_yellow,(35, 70))
+
 # Load the image cloud
-Cloud_img = pygame.image.load("./img/cloud.png")
+Cloud_img = pygame.image.load(os.path.join(img, "cloud.png"))
 
 # Load ground
-ground_img = pygame.image.load("./img/ground.png")
+ground_img = pygame.image.load(os.path.join(img, "ground.png"))
 # resize rhe ground
 scaled_ground_img = pygame.transform.scale(ground_img, (2048, 69.5))
 
@@ -46,6 +53,7 @@ STAND_H = 75
 DUCK_W = 100
 DUCK_H = 50
 
+prev_x = 1024
 
 # CAN's CODE
 # Classes for the game startup menu, buttons, and helper functions for the opening screen
@@ -249,6 +257,68 @@ class Button:
 
 
 # Dino class made by Sophie
+
+'''
+plan for obstacle class:
+needs a RECT
+type
+
+dino class needs a "hitting obstacles" thing
+
+how will it generate?
+don't want it to generate entirely randomly
+but we do need some variation
+generate it someplace between 1024 and 2048
+and it moves left 
+can't be too close to any of the other obstacles
+distance?
+helper function - generates a new cactus a randomized but set distance away from the last one
+make loop tht will generate the first couple
+check the first one of that list and delete if its off
+
+rect y = start_y - height
+rect x = randomly generated ig
+'''
+class Obstacle:
+    def __init__(self, x):
+        obstacles.append(self)
+
+        #randomly determines if the cactus is yellow or green
+        #will change a bit once we add birds
+        self.type = randint(0, 1)
+        if(self.type == 0):
+            self.image = green_img
+        else:
+            self.image = yellow_img
+        #img stuff here:
+
+        self.box = pygame.Rect(x, START_Y-70+dino.rect.height, 35, 70) #placeholder box for the moment
+
+    def render(self):
+        pygame.draw.rect(screen, (0, 0, 0), self.box)
+        screen.blit(self.image, (self.box.x, self.box.y))
+    def move(self):
+        self.box.x -= (40+dino.speed/100)*dt
+
+    def remove(self):
+        if self.box.x < -100:
+            obstacles.remove(self)
+            add_obs()
+
+def check_losing():
+    for obs in obstacles:
+        if dino.rect.colliderect(obs.box):
+            menu.running = False
+            pygame.quit()
+#adds a new obstacle within a randomized distance of the last one
+def add_obs():
+    global prev_x
+    new_x = prev_x + randint(250, 600)
+    obstacles.append(Obstacle(new_x))
+    #return new_x
+
+    prev_x= new_x
+
 class Dino:
     """
     propertes: 
@@ -317,7 +387,7 @@ class Dino:
         self.rect.y += self.velocityY
 
         # switches between states
-        
+
 
     # Makes the RECT for the dino
     # self.x is CENTERED
@@ -356,6 +426,7 @@ class Dino:
 buttons = []
 clouds = []
 
+
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("                                                                                                                                                                                                                                                                            Dino Dash")
@@ -367,7 +438,10 @@ ground = Ground()
 menu = Menu()
 dino = Dino()
 
+obstacles = []
 
+for i in range(6):
+    add_obs()
 
 dt = 0
 
@@ -454,6 +528,14 @@ while menu.running:
     font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
     text = font.render("Score:" + str(round(dino.score)), True, "yellow")
     screen.blit(text, (0, 0))
+
+    for obs in obstacles:
+        obs.move()
+        obs.render()
+
+    obstacles[0].remove()
+    print(len(obstacles))
+    check_losing()
 
     # flip() the display to put your work on screen
     pygame.display.flip()
