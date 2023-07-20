@@ -91,7 +91,7 @@ class Menu:
         # Loading all the buttons for
 
         # setings menu
-        Button(300, 64, 173, 32, "setting", skinChange, name="skinChange")
+        Button(300, 64, 190, 32, "setting", skinChange, name="skinChange")
         Button(500, 64, 208, 32, "setting", self.main, name="back to menu")
 
         # main menu
@@ -501,6 +501,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 menu.running = False
+                menu.startGame = False
 
         # setup
         keys = pygame.key.get_pressed()
@@ -591,7 +592,7 @@ while menu.running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             menu.running = False
-            menu.startGame = True
+            
 
     # updates the player (location)
 
