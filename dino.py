@@ -529,7 +529,7 @@ def main():
         # First check if dino is on the ground and standing
 
         # make updatements to dino
-        dino.is_standing = not keys[pygame.K_DOWN]
+        dino.is_standing = not (keys[pygame.K_DOWN] or keys[pygame.K_s])
 
         if (
             (keys[pygame.K_SPACE] or keys[pygame.K_UP])
