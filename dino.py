@@ -466,12 +466,31 @@ class Dino:
             screen.blit(self.usedFrame_duck, (self.rect.x - 20, self.rect.y))
 
     def reset(self):
-        pass
+        self.moveBy = 50
+        self.frameTime = 0
+        self.usedFrame = menu.run_img1
+        self.usedFrame_duck = menu.duck_img1
+        # how fast dino moves in the x direction
+
+        # Attribute initalizers
+        self.image = COLOR
+        # switches between ducking and standing states
+        self.is_standing = True
+        self.was_standing = True
+        # checks if the dino is jumping or not
+        self.on_ground = True
+        # controls the dino jump (essentially y velocity)
+        self.velocityY = 0
+
+        self.speed = 300
+        self.score = 1
+
+        self.rect.x = START_X
+        self.rect.y = START_Y - STAND_H
 
 
 def reset():
     dino.reset()
-    
 
 
 def main():
