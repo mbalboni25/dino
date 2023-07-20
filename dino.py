@@ -389,7 +389,7 @@ class Dino:
     def update(self):
         if self.speed <= 500:
             self.speed += 5 *dt 
-        self.score += (self.speed / 500)
+        self.score += (self.speed / 1000)
         self.rect.y += self.velocityY
 
         # switches between states
