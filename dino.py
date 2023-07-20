@@ -85,10 +85,15 @@ class Menu:
         # loop variables
         self.running = True
         self.startGame = False
+        self.score = 1
+        self.lastScore = self.score
 
         self.setDino()
 
         # Loading all the buttons for
+
+        # game over menu
+        Button(408, 192, 208, 32, "game over", self.main, name="back to menu")
 
         # setings menu
         Button(300, 64, 190, 32, "setting", skinChange, name="skinChange")
@@ -129,11 +134,20 @@ class Menu:
         self.jump_img2 = pygame.transform.scale(ditto_ducking_img,(100, 50))
 
         self.skin = "ditto"
+    def gameOver(self):
+        self.window = "game over"
+        self.logoShow = False
+        for button in buttons:
+            button.show = False
+            if button.window == "game over":
+                button.show = True
+
 
     def setting(self) -> None:
         """
         shows only buttons in the settings window
         """
+        self.window = "setting"
         self.logoShow = False
         for button in buttons:
             button.show = False
@@ -144,6 +158,7 @@ class Menu:
         """
         shows only buttons in the main window
         """
+        self.window = "main"
         self.logoShow = True
         for button in buttons:
             button.show = False
@@ -295,7 +310,7 @@ class Obstacle:
         # will change a bit once we add birds
 
         self.type = randint(0, 2)
-        if dino.score <= 1000:
+        if menu.score <= 1000:
             self.type = randint(0, 1)
         if self.type == 0:
             self.image = green_img
@@ -382,7 +397,6 @@ class Dino:
         self.velocityY = 0
 
         self.speed = 300
-        self.score = 1
 
         # sets up with defaults
         self.rect = pygame.Rect(START_X, START_Y - STAND_H, STAND_W, STAND_H)
@@ -429,7 +443,7 @@ class Dino:
     def update(self):
         if self.speed <= 500:
             self.speed += 5 * dt
-        self.score += self.speed / 1000
+        menu.score += self.speed / 1000
         self.rect.y += self.velocityY
 
         # switches between states
@@ -484,7 +498,8 @@ class Dino:
         self.velocityY = 0
 
         self.speed = 300
-        self.score = 1
+        menu.lastScore = menu.score
+        menu.score = 1
 
         self.rect.x = START_X
         self.rect.y = START_Y - STAND_H
@@ -492,17 +507,15 @@ class Dino:
 
 def reset():
     dino.reset()
-
     global obstacles
     global prev_x
     obstacles = []
     prev_x = 1000
     for i in range(6):
         add_obs()
+    menu.gameOver()
 
 def main():
-    reset()
-
     while menu.startGame:
         # poll for events
         # pygame.QUIT event means the user clicked X to close your window
@@ -554,8 +567,8 @@ def main():
         dino.draw()
 
         font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
-        text = font.render("Score:" + str(round(dino.score)), True, "yellow")
-        screen.blit(text, (0, 0))
+        text = font.render("Score:" + str(round(menu.score)), True, "black")
+        screen.blit(text, (5, 5))
 
         # flip() the display to put your work on screen
         pygame.display.flip()
@@ -564,6 +577,7 @@ def main():
         # dt is delta time in seconds since last frame, used for framerate-
         # independent physics.
         dt = clock.tick(60) / 1000
+    reset()
 
 
 # this list will hold all of the objects it is named after.
@@ -623,6 +637,14 @@ while menu.running:
     for button in buttons:
         button.update()
         button.render()
+
+    if menu.window == "game over":
+        font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 32)
+        text = font.render("Game Over", True, "black")
+        screen.blit(text, (380, 50))
+        font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
+        text = font.render(f"score: {round(menu.lastScore)}", True, "black")
+        screen.blit(text, (420, 98))
 
     # flip() the display to put your work on screen
     pygame.display.flip()
