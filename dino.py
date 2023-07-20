@@ -266,6 +266,7 @@ class Obstacle:
         #randomly determines if the cactus is yellow or green
         #will change a bit once we add birds
 
+
         self.type = randint(0, 2)
         if(self.type == 0):
             self.image = green_img
@@ -280,7 +281,7 @@ class Obstacle:
                 new_y-= 55
                 #print('mid')
             else:
-                new_y -= tier*35
+                new_y -= tier*40
             self.image = meteor_img
             self.box = pygame.Rect(x, new_y, 55, 30) #'''
 
@@ -292,7 +293,7 @@ class Obstacle:
         #self.box = pygame.Rect(x, START_Y -65 -randint(-5, 3), 35, 70) #placeholder box for the moment
 
     def render(self):
-        # pygame.draw.rect(screen, (0, 0, 0), self.box)
+        pygame.draw.rect(screen, (0, 0, 0), self.box)
         screen.blit(self.image, (self.box.x, self.box.y))
     def move(self):
         self.box.x -= moveBy * dt
