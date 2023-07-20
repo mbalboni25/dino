@@ -330,7 +330,7 @@ class Dino:
         self.usedFrame = menu.run_img1
         self.usedFrame_duck = menu.duck_img1
         # how fast dino moves in the x direction
-        self.speed = 30000
+
         # Attribute initalizers
         self.image = COLOR
         # switches between ducking and standing states
