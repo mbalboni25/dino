@@ -14,6 +14,9 @@ import pygame.draw_py
 
 
 img = "img"
+
+# load Logo
+logo_img = pygame.image.load(os.path.join(img, "Logo.png"))
 # Load Dino
 dino_img1 = pygame.image.load(os.path.join(img, "dino", "frame1.png")) # TODO like this on all similar lines
 dino_img2 = pygame.image.load(os.path.join(img, "dino", "frame2.png"))
@@ -40,14 +43,14 @@ scaled_ground_img = pygame.transform.scale(ground_img, (2048, 69.5))
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 256
 START_X = 120
-START_Y = 180
+START_Y = 220
 COLOR = (30, 230, 230)  # color is just a temporary replacement for the actual dino imgs
 
 # hit boxes for the standing and ducking dino
-STAND_W = 20
-STAND_H = 50
-DUCK_W = 50
-DUCK_H = 20
+STAND_W = 75
+STAND_H = 75
+DUCK_W = 100
+DUCK_H = 50
 
 prev_x = 1024
 
@@ -90,29 +93,32 @@ class Menu:
         # Loading all the buttons for
 
         # setings menu
-        Button(300, 64, 173, 32, "seting", soundChange, name="sound")
+        Button(300, 64, 173, 32, "setting", soundChange, name="sound")
         self.soundOn = True
-        Button(500, 64, 208, 32, "seting", self.main, name="back to menu")
+        Button(500, 64, 208, 32, "setting", self.main, name="back to menu")
 
         # main menu
-        Button(384, 32, 76, 32, "main", StartGame, name="play")
-        Button(480, 32, 76, 32, "main", StartGame, name="skin")
-        Button(608, 32, 128, 32, "main", self.seting, name="setings")
+        self.logoShow = True
+        Button(350, 50, 76, 32, "main", StartGame, name="play")
+        # Button(480, 32, 76, 32, "main", StartGame, name="skin")
+        Button(350, 95, 140, 32, "main", self.setting, name="settings")
         self.main()
 
-    def seting(self) -> None:
+    def setting(self) -> None:
         """
         shows only buttons in the settings window
         """
+        self.logoShow = False
         for button in buttons:
             button.show = False
-            if button.window == "seting":
+            if button.window == "setting":
                 button.show = True
 
     def main(self) -> None:
         """
         shows only buttons in the main window
         """
+        self.logoShow = True
         for button in buttons:
             button.show = False
             if button.window == "main":
@@ -178,7 +184,7 @@ class Ground:
     render(self) -> None: moves the ground and then puts it onto the screen
     """
     def __init__(self) -> None:
-        self.rect = pygame.Rect(0, START_Y + STAND_H, SCREEN_WIDTH, 20)
+        self.rect = pygame.Rect(0, START_Y, SCREEN_WIDTH, 20)
         self.x = 0
 
     def render(self) -> None:
@@ -225,13 +231,13 @@ class Button:
             font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
             if self.name == "sound":
                 if not menu.soundOn:
-                    text = font.render("Sound: Off", True, "green")
+                    text = font.render("Sound: Off", True, "yellow")
                 else:
-                    text = font.render("Sound: On", True, "green")
+                    text = font.render("Sound: On", True, "yellow")
             else:
-                text = font.render(self.name, True, "green")
+                text = font.render(self.name, True, "yellow")
             if self.mouseOn:
-                pygame.draw.rect(screen, (255, 255, 255), self.react, border_radius=10)
+                pygame.draw.rect(screen, (252, 157, 3), self.react, border_radius=10)
                 screen.blit(text, textRect)
             else:
                 pygame.draw.rect(screen, (0, 0, 0), self.react, border_radius=10)
@@ -327,32 +333,48 @@ class Dino:
         self.image = COLOR
         # switches between ducking and standing states
         self.is_standing = True
+        self.was_standing = True
         # checks if the dino is jumping or not
         self.on_ground = True
         # controls the dino jump (essentially y velocity)
         self.velocityY = 0
 
         # sets up with defaults
-        self.rect = pygame.Rect(START_X, START_Y, STAND_W, STAND_H)
+        self.rect = pygame.Rect(START_X, START_Y - STAND_H, STAND_W, STAND_H)
     # brings the dino up
     def jump(self):
         self.velocityY = -7  # update as necessary to change the power of the jump
 
     # drags the dino back down if it's in the air
     def gravity(self):
-        # update as necessary to change the falling speed
-        self.velocityY += 16 * dt
-        # if the dino ducks while jumping, speed increases
-        if not self.is_standing:
-            self.velocityY += 32 * dt  # 10 is hardcoded arbitrary extra fall
-        # speed limit
-        if self.velocityY > 25:
-            self.velocityY = 25
-        
+        if dino.is_standing:
+            self.rect.width = STAND_W
+            self.rect.height = STAND_H
+            if not self.was_standing:
+                self.rect.y -= 25
+            self.was_standing = True
+
+        else:
+            self.rect.width = DUCK_W
+            self.rect.height = DUCK_H
+            if self.was_standing:
+                self.rect.y += 25
+            self.was_standing = False
         self.on_ground = False
         if self.rect.colliderect(ground.rect):
             self.on_ground = True
             self.velocityY = 0
+            self.rect.bottom = ground.rect.top
+        elif not self.on_ground:
+            # update as necessary to change the falling speed
+            self.velocityY += 16 * dt
+            # if the dino ducks while jumping, speed increases
+            if not self.is_standing:
+                self.velocityY += 32 * dt  # 10 is hardcoded arbitrary extra fall
+            # speed limit
+            if self.velocityY > 25:
+                self.velocityY = 25
+
         
 
     def update(self):
@@ -368,10 +390,10 @@ class Dino:
 
     def draw(self):
         # simple for now but may update later when we add the images of the dino
-        pygame.draw.rect(screen, self.image, self.rect)
+        #pygame.draw.rect(screen, self.image, self.rect)
         self.frameTime -= 1
         if self.frameTime <= 0:
-            self.frameTime = 15
+            self.frameTime = 10
             if not self.on_ground:
                 self.usedFrame = menu.jump_img1
             elif self.usedFrame == menu.run_img1 or self.usedFrame == menu.jump_img1:
@@ -380,7 +402,7 @@ class Dino:
                 self.usedFrame = menu.run_img1
             if not self.on_ground:
                 self.usedFrame_duck = menu.jump_img2
-            elif self.usedFrame_duck == menu.duck_img1:
+            elif self.usedFrame_duck == menu.duck_img1 or self.usedFrame_duck == menu.jump_img2:
                 self.usedFrame_duck = menu.duck_img2
             elif self.usedFrame_duck == menu.duck_img2:
                 self.usedFrame_duck = menu.duck_img1
@@ -401,8 +423,9 @@ clouds = []
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Dino")
-pygame.display.set_icon(pygame.image.load("./img/green cactus.png"))
+pygame.display.set_caption("                                                                                                                                                                                                                                                                            Dino Dash")
+pygame.display.set_icon(logo_img)
+logo_img = pygame.transform.scale(logo_img, (153, 134))
 clock = pygame.time.Clock()
 ground = Ground()
 # dino!
@@ -441,6 +464,9 @@ while not menu.startGame:
         cloud.update()
 
     # RENDER GAME HERE
+    if menu.logoShow:
+        screen.blit(logo_img, (150, 45))
+
     for button in buttons:
         button.update()
         button.render()
@@ -469,11 +495,11 @@ while menu.running:
 
 
     # make updatements to dino
-    dino.gravity()
     dino.is_standing = not keys[pygame.K_DOWN]
+
     if (keys[pygame.K_SPACE] or keys[pygame.K_UP]) and dino.on_ground and dino.is_standing:
         dino.jump()
-    
+    dino.gravity()
     dino.update()
 
     # implement updatements
