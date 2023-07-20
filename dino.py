@@ -85,25 +85,25 @@ class Menu:
         # Loading all the buttons for
 
         # setings menu
-        Button(300, 64, 173, 32, "seting", soundChange, name="sound")
+        Button(300, 64, 173, 32, "setting", soundChange, name="sound")
         self.soundOn = True
-        Button(500, 64, 208, 32, "seting", self.main, name="back to menu")
+        Button(500, 64, 208, 32, "setting", self.main, name="back to menu")
 
         # main menu
         self.logoShow = True
         Button(350, 50, 76, 32, "main", StartGame, name="play")
         # Button(480, 32, 76, 32, "main", StartGame, name="skin")
-        Button(350, 95, 128, 32, "main", self.seting, name="setings")
+        Button(350, 95, 140, 32, "main", self.setting, name="settings")
         self.main()
 
-    def seting(self) -> None:
+    def setting(self) -> None:
         """
         shows only buttons in the settings window
         """
         self.logoShow = False
         for button in buttons:
             button.show = False
-            if button.window == "seting":
+            if button.window == "setting":
                 button.show = True
 
     def main(self) -> None:
@@ -223,13 +223,13 @@ class Button:
             font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
             if self.name == "sound":
                 if not menu.soundOn:
-                    text = font.render("Sound: Off", True, "green")
+                    text = font.render("Sound: Off", True, "yellow")
                 else:
-                    text = font.render("Sound: On", True, "green")
+                    text = font.render("Sound: On", True, "yellow")
             else:
-                text = font.render(self.name, True, "green")
+                text = font.render(self.name, True, "yellow")
             if self.mouseOn:
-                pygame.draw.rect(screen, (255, 255, 255), self.react, border_radius=10)
+                pygame.draw.rect(screen, (252, 157, 3), self.react, border_radius=10)
                 screen.blit(text, textRect)
             else:
                 pygame.draw.rect(screen, (0, 0, 0), self.react, border_radius=10)
