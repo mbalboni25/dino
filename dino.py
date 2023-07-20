@@ -373,7 +373,7 @@ class Dino:
             self.rect.bottom = ground.rect.top
         elif not self.on_ground:
             # update as necessary to change the falling speed
-            self.velocityY += 9 * dt
+            self.velocityY += 11 * dt
             # if the dino ducks while jumping, speed increases
             if not self.is_standing:
                 self.velocityY += 32 * dt  # 10 is hardcoded arbitrary extra fall
