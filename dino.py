@@ -47,6 +47,12 @@ ground_img = pygame.image.load(os.path.join(img, "ground.png"))
 # resize rhe ground
 scaled_ground_img = pygame.transform.scale(ground_img, (2048, 69.5))
 
+#music setup (testing mode)
+pygame.mixer.init()
+step = pygame.mixer.Sound(os.path.join(img, "running.mp3"))
+music = pygame.mixer.music.load(os.path.join(img, "game music.mp3"))
+ping = pygame.mixer.Sound(os.path.join(img, "trimmed ping.mp3"))
+
 # Setup variables
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 256
@@ -356,6 +362,7 @@ def check_losing():
     for obs in obstacles:
         if dino.rect.colliderect(obs.box):
             # print("hit a box")
+            #step.stop()
             menu.startGame = False
             # pygame.quit()
 
@@ -445,6 +452,9 @@ class Dino:
         menu.score += self.speed / 1000
         self.rect.y += self.velocityY
 
+        if round(menu.score)%400 == 0:
+            print("passed checkpoint")
+            ping.play()
         # switches between states
 
     # Makes the RECT for the dino
@@ -456,22 +466,30 @@ class Dino:
         # simple for now but may update later when we add the images of the dino
         # pygame.draw.rect(screen, self.image, self.rect)
         self.frameTime -= 1
+        #if self.frameTime == 5:
+            #step.stop()
         if self.frameTime <= 0:
             self.frameTime = 10
             if not self.on_ground:
+                step.stop()
                 self.usedFrame = menu.jump_img1
             elif self.usedFrame == menu.run_img1:
+                step.play(maxtime=100)
                 self.usedFrame = menu.run_img2
             elif self.usedFrame == menu.run_img2 or self.usedFrame == menu.jump_img1:
+                step.play(maxtime=100)
                 self.usedFrame = menu.run_img1
             if not self.on_ground:
+                step.stop()
                 self.usedFrame_duck = menu.jump_img2
             elif (
                 self.usedFrame_duck == menu.duck_img1
                 or self.usedFrame_duck == menu.jump_img2
             ):
+                step.play(maxtime=100)
                 self.usedFrame_duck = menu.duck_img2
             elif self.usedFrame_duck == menu.duck_img2:
+                step.play(maxtime=100)
                 self.usedFrame_duck = menu.duck_img1
 
         if self.is_standing:
@@ -559,6 +577,10 @@ def main():
             obs.render()
 
         obstacles[0].remove()
+
+        #checks score for ping
+
+
         check_losing()
 
 
@@ -609,13 +631,16 @@ for i in range(6):
 
 # sets up the ground rect spanning the entire width of the screen
 
+#pygame.mixer.music.play(loops=-1)
+step.set_volume(1)
+pygame.mixer.music.set_volume(0.5)
 while menu.running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             menu.running = False
-            
+
 
     # updates the player (location)
 
