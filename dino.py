@@ -364,7 +364,7 @@ class Dino:
     """
 
     def __init__(self):
-        self.frameTime = 15
+        self.frameTime = 0
         self.usedFrame = menu.run_img1
         self.usedFrame_duck = menu.duck_img1
         # how fast dino moves in the x direction
@@ -481,8 +481,11 @@ pygame.display.set_icon(logo_img)
 logo_img = pygame.transform.scale(logo_img, (153, 134))
 clock = pygame.time.Clock()
 ground = Ground()
-# dino!
+
 menu = Menu()
+# dino!
+dino = Dino()
+
 
 obstacles = []
 
@@ -532,7 +535,7 @@ while not menu.startGame:
     dt = clock.tick(60) / 1000
 
 
-dino = Dino()
+
 dino.speed = 300
 
 while menu.running:
