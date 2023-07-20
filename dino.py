@@ -29,8 +29,10 @@ dino_ducking_img3 = pygame.image.load(os.path.join(img, "dino", "duck_frame3.png
 
 obs_green = pygame.image.load(os.path.join(img, "green cactus.png"))
 obs_yellow = pygame.image.load(os.path.join(img, "yellow cactus.png"))
-green_img = pygame.transform.scale(obs_green,(35, 70))
-yellow_img = pygame.transform.scale(obs_yellow,(35, 70))
+obs_meteor = pygame.image.load(os.path.join(img, "Supreme_Meteor.png"))
+green_img = pygame.transform.scale(obs_green,(30, 60))
+yellow_img = pygame.transform.scale(obs_yellow,(30, 60))
+meteor_img = pygame.transform.scale(obs_meteor,(55, 30))
 
 # Load the image cloud
 Cloud_img = pygame.image.load(os.path.join(img, "cloud.png"))
@@ -52,7 +54,8 @@ STAND_W = 35
 STAND_H = 75
 DUCK_W = 60
 DUCK_H = 50
-prev_x = 1024
+prev_x = 1000
+dt = 0
 
 # CAN's CODE
 # Classes for the game startup menu, buttons, and helper functions for the opening screen
@@ -256,42 +259,37 @@ class Button:
 
 
 # Dino class made by Sophie
-
-'''
-plan for obstacle class:
-needs a RECT
-type
-
-dino class needs a "hitting obstacles" thing
-
-how will it generate?
-don't want it to generate entirely randomly
-but we do need some variation
-generate it someplace between 1024 and 2048
-and it moves left 
-can't be too close to any of the other obstacles
-distance?
-helper function - generates a new cactus a randomized but set distance away from the last one
-make loop tht will generate the first couple
-check the first one of that list and delete if its off
-
-rect y = start_y - height
-rect x = randomly generated ig
-'''
 class Obstacle:
     def __init__(self, x):
         #obstacles.append(self)
 
         #randomly determines if the cactus is yellow or green
         #will change a bit once we add birds
-        self.type = randint(0, 1)
+
+        self.type = randint(0, 2)
         if(self.type == 0):
             self.image = green_img
-        else:
+            self.box = pygame.Rect(x, START_Y - 60, 30, 60)  # placeholder box for the moment
+        elif self.type == 1:
             self.image = yellow_img
+            self.box = pygame.Rect(x, START_Y - 60, 30, 60)  # placeholder box for the moment
+        else:
+            new_y = START_Y-30
+            tier = randint(0, 2)
+            if tier == 1:
+                new_y-= 55
+                #print('mid')
+            else:
+                new_y -= tier*35
+            self.image = meteor_img
+            self.box = pygame.Rect(x, new_y, 55, 30) #'''
+
+        #this is to test the metors
+        #self.image = meteor_img
+        #self.box = pygame.Rect(x, START_Y-30-55, 55, 30)
         #img stuff here:
 
-        self.box = pygame.Rect(x, START_Y -65 -randint(-5, 3), 35, 70) #placeholder box for the moment
+        #self.box = pygame.Rect(x, START_Y -65 -randint(-5, 3), 35, 70) #placeholder box for the moment
 
     def render(self):
         # pygame.draw.rect(screen, (0, 0, 0), self.box)
@@ -307,6 +305,7 @@ class Obstacle:
 def check_losing():
     for obs in obstacles:
         if dino.rect.colliderect(obs.box):
+            #print("hit a box")
             menu.running = False
             #pygame.quit()
 #adds a new obstacle within a randomized distance of the last one
@@ -314,7 +313,7 @@ def add_obs():
     global prev_x
     if len(obstacles)>0:
         prev_x = obstacles[-1].box.x
-    new_x = prev_x + randint(250, 600)
+    new_x = prev_x + randint(250, 600) + dino.speed/5
     obstacles.append(Obstacle(new_x))
     #return new_x
 
@@ -341,7 +340,7 @@ class Dino:
         # controls the dino jump (essentially y velocity)
         self.velocityY = 0
 
-        self.speed = 50
+        self.speed = 300
         self.score = 1
 
         # sets up with defaults
@@ -349,7 +348,7 @@ class Dino:
     # brings the dino up
     def jump(self):
         self.rect.y -= 2
-        self.velocityY = -8  # update as necessary to change the power of the jump
+        self.velocityY = -9  # update as necessary to change the power of the jump
 
     # drags the dino back down if it's in the air
     def gravity(self):
@@ -377,7 +376,7 @@ class Dino:
             self.on_ground = False
         if not self.on_ground:
             # update as necessary to change the falling speed
-            self.velocityY += 16 * dt
+            self.velocityY += 21 * dt
             # if the dino ducks while jumping, speed increases
             if not self.is_standing:
                 self.velocityY += 64 * dt  # 10 is hardcoded arbitrary extra fall
@@ -450,7 +449,7 @@ obstacles = []
 for i in range(6):
     add_obs()
 
-dt = 0
+
 moveBy = 50
 
 
@@ -492,7 +491,7 @@ while not menu.startGame:
     # independent physics.
     dt = clock.tick(60) / 1000
 
-dino.speed = 150
+dino.speed = 300
 
 while menu.running:
     # poll for events
