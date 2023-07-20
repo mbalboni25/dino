@@ -17,7 +17,6 @@ img = "img"
 
 # load Logo
 logo_img = pygame.image.load(os.path.join(img, "Logo.png"))
-# font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
 # Load Dino
 dino_img1 = pygame.image.load(os.path.join(img, "dino", "frame1.png")) 
 dino_img2 = pygame.image.load(os.path.join(img, "dino", "frame2.png"))
@@ -274,7 +273,7 @@ class Button:
                 self.react.width - 16,
                 self.react.height - 16,
             )
-            font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
+            font = pygame.font.Font(os.path.join(img, "PressStart2P-Regular.ttf"), 16)
             if self.name == "skinChange":
                 if menu.skin == "dino":
                     text = font.render("Skin: dino", True, "yellow")
@@ -461,9 +460,9 @@ class Dino:
             self.frameTime = 10
             if not self.on_ground:
                 self.usedFrame = menu.jump_img1
-            elif self.usedFrame == menu.run_img1 or self.usedFrame == menu.jump_img1:
+            elif self.usedFrame == menu.run_img1:
                 self.usedFrame = menu.run_img2
-            elif self.usedFrame == menu.run_img2:
+            elif self.usedFrame == menu.run_img2 or self.usedFrame == menu.jump_img1:
                 self.usedFrame = menu.run_img1
             if not self.on_ground:
                 self.usedFrame_duck = menu.jump_img2
@@ -566,7 +565,7 @@ def main():
         # pygame.draw.rect(screen, 0, GROUND_RECT)
         dino.draw()
 
-        font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
+        font = pygame.font.Font(os.path.join(img, "PressStart2P-Regular.ttf"), 16)
         text = font.render("Score:" + str(round(menu.score)), True, "black")
         screen.blit(text, (5, 5))
 
@@ -639,10 +638,10 @@ while menu.running:
         button.render()
 
     if menu.window == "game over":
-        font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 32)
+        font = pygame.font.Font(os.path.join(img, "PressStart2P-Regular.ttf"), 32)
         text = font.render("Game Over", True, "black")
         screen.blit(text, (380, 50))
-        font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
+        font = pygame.font.Font(os.path.join(img, "PressStart2P-Regular.ttf"), 16)
         text = font.render(f"score: {round(menu.lastScore)}", True, "black")
         screen.blit(text, (420, 98))
 
