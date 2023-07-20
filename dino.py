@@ -291,10 +291,10 @@ class Obstacle:
             self.image = yellow_img
         #img stuff here:
 
-        self.box = pygame.Rect(x, START_Y-70, 35, 70) #placeholder box for the moment
+        self.box = pygame.Rect(x, START_Y -65 -randint(-5, 3), 35, 70) #placeholder box for the moment
 
     def render(self):
-        pygame.draw.rect(screen, (0, 0, 0), self.box)
+        # pygame.draw.rect(screen, (0, 0, 0), self.box)
         screen.blit(self.image, (self.box.x, self.box.y))
     def move(self):
         self.box.x -= moveBy * dt
@@ -403,7 +403,7 @@ class Dino:
 
     def draw(self):
         # simple for now but may update later when we add the images of the dino
-        pygame.draw.rect(screen, self.image, self.rect)
+        # pygame.draw.rect(screen, self.image, self.rect)
         self.frameTime -= 1
         if self.frameTime <= 0:
             self.frameTime = 10
