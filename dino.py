@@ -280,7 +280,7 @@ rect x = randomly generated ig
 '''
 class Obstacle:
     def __init__(self, x):
-        obstacles.append(self)
+        #obstacles.append(self)
 
         #randomly determines if the cactus is yellow or green
         #will change a bit once we add birds
@@ -291,7 +291,7 @@ class Obstacle:
             self.image = yellow_img
         #img stuff here:
 
-        self.box = pygame.Rect(x, START_Y-70+dino.rect.height, 35, 70) #placeholder box for the moment
+        self.box = pygame.Rect(x, START_Y-70, 35, 70) #placeholder box for the moment
 
     def render(self):
         pygame.draw.rect(screen, (0, 0, 0), self.box)
@@ -308,10 +308,12 @@ def check_losing():
     for obs in obstacles:
         if dino.rect.colliderect(obs.box):
             menu.running = False
-            pygame.quit()
+            #pygame.quit()
 #adds a new obstacle within a randomized distance of the last one
 def add_obs():
     global prev_x
+    if len(obstacles)>0:
+        prev_x = obstacles[-1].box.x
     new_x = prev_x + randint(250, 600)
     obstacles.append(Obstacle(new_x))
     #return new_x
@@ -328,7 +330,7 @@ class Dino:
         self.usedFrame = menu.run_img1
         self.usedFrame_duck = menu.duck_img1
         # how fast dino moves in the x direction
-        self.speed = 10
+        self.speed = 30000
         # Attribute initalizers
         self.image = COLOR
         # switches between ducking and standing states
@@ -343,7 +345,7 @@ class Dino:
         self.rect = pygame.Rect(START_X, START_Y - STAND_H, STAND_W, STAND_H)
     # brings the dino up
     def jump(self):
-        self.velocityY = -7  # update as necessary to change the power of the jump
+        self.velocityY = -8  # update as necessary to change the power of the jump
 
     # drags the dino back down if it's in the air
     def gravity(self):
@@ -367,7 +369,7 @@ class Dino:
             self.rect.bottom = ground.rect.top
         elif not self.on_ground:
             # update as necessary to change the falling speed
-            self.velocityY += 16 * dt
+            self.velocityY += 10 * dt
             # if the dino ducks while jumping, speed increases
             if not self.is_standing:
                 self.velocityY += 32 * dt  # 10 is hardcoded arbitrary extra fall
