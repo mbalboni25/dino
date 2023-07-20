@@ -195,7 +195,7 @@ class Cloud:
         if self.x <= -150:
             clouds.remove(self)
         else:
-            self.x -= (8 * (100 / (self.y + 50)) + moveBy) * dt
+            self.x -= (8 * (100 / (self.y + 50)) + dino.moveBy) * dt
             self.nextCloudIn -= 1
             if len(clouds) < 10:
                 if self.nextCloudIn == 0:
@@ -219,7 +219,7 @@ class Ground:
         self.x = 0
 
     def render(self) -> None:
-        self.x -= moveBy * dt
+        self.x -= dino.moveBy * dt
         if self.x <= -1025:
             self.x = 0
         screen.blit(scaled_ground_img, (self.x, 187))
@@ -325,11 +325,11 @@ class Obstacle:
         # self.box = pygame.Rect(x, START_Y -65 -randint(-5, 3), 35, 70) #placeholder box for the moment
 
     def render(self):
-        pygame.draw.rect(screen, (0, 0, 0), self.box)
+        # pygame.draw.rect(screen, (0, 0, 0), self.box)
         screen.blit(self.image, (self.box.x, self.box.y))
 
     def move(self):
-        self.box.x -= moveBy * dt
+        self.box.x -= dino.moveBy * dt
 
     def remove(self):
         if self.box.x < -100:
@@ -341,7 +341,7 @@ def check_losing():
     for obs in obstacles:
         if dino.rect.colliderect(obs.box):
             # print("hit a box")
-            menu.running = False
+            menu.startGame = False
             # pygame.quit()
 
 
@@ -364,6 +364,7 @@ class Dino:
     """
 
     def __init__(self):
+        self.moveBy = 50
         self.frameTime = 0
         self.usedFrame = menu.run_img1
         self.usedFrame_duck = menu.duck_img1
@@ -439,7 +440,7 @@ class Dino:
 
     def draw(self):
         # simple for now but may update later when we add the images of the dino
-        pygame.draw.rect(screen, self.image, self.rect)
+        # pygame.draw.rect(screen, self.image, self.rect)
         self.frameTime -= 1
         if self.frameTime <= 0:
             self.frameTime = 10
@@ -463,6 +464,77 @@ class Dino:
             screen.blit(self.usedFrame, (self.rect.x - 20, self.rect.y))
         else:
             screen.blit(self.usedFrame_duck, (self.rect.x - 20, self.rect.y))
+
+    def reset(self):
+        pass
+
+
+def reset():
+    dino.reset()
+    
+
+
+def main():
+    reset()
+
+    while menu.startGame:
+        # poll for events
+        # pygame.QUIT event means the user clicked X to close your window
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                menu.running = False
+
+        # setup
+        keys = pygame.key.get_pressed()
+
+        # First check if dino is on the ground and standing
+
+        # make updatements to dino
+        dino.is_standing = not keys[pygame.K_DOWN]
+
+        if (
+            (keys[pygame.K_SPACE] or keys[pygame.K_UP])
+            and dino.on_ground
+            and dino.is_standing
+        ):
+            dino.jump()
+        dino.gravity()
+        dino.update()
+
+        # implement updatements
+
+        # RENDER GAME HERE
+        # fill the screen with a color to wipe away anything from last frame
+        screen.fill((183, 201, 226))
+
+        # RENDER GAME HERE
+        dino.moveBy = dino.speed
+        ground.render()
+        for obs in obstacles:
+            obs.move()
+            obs.render()
+
+        obstacles[0].remove()
+        check_losing()
+
+        if len(clouds) == 0:
+            Cloud()
+        for cloud in clouds:
+            cloud.update()
+        # pygame.draw.rect(screen, 0, GROUND_RECT)
+        dino.draw()
+
+        font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
+        text = font.render("Score:" + str(round(dino.score)), True, "yellow")
+        screen.blit(text, (0, 0))
+
+        # flip() the display to put your work on screen
+        pygame.display.flip()
+
+        # limits FPS to 60
+        # dt is delta time in seconds since last frame, used for framerate-
+        # independent physics.
+        dt = clock.tick(60) / 1000
 
 
 # this list will hold all of the objects it is named after.
@@ -493,12 +565,9 @@ for i in range(6):
     add_obs()
 
 
-moveBy = 50
-
-
 # sets up the ground rect spanning the entire width of the screen
 
-while not menu.startGame:
+while menu.running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
@@ -528,73 +597,10 @@ while not menu.startGame:
 
     # flip() the display to put your work on screen
     pygame.display.flip()
+    if menu.startGame:
+        main()
 
     # limits FPS to 60
     # dt is delta time in seconds since last frame, used for framerate-
     # independent physics.
     dt = clock.tick(60) / 1000
-
-
-
-dino.speed = 300
-
-while menu.running:
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            menu.running = False
-
-    # setup
-    keys = pygame.key.get_pressed()
-
-    # First check if dino is on the ground and standing
-
-    # make updatements to dino
-    dino.is_standing = not keys[pygame.K_DOWN]
-
-    if (
-        (keys[pygame.K_SPACE] or keys[pygame.K_UP])
-        and dino.on_ground
-        and dino.is_standing
-    ):
-        dino.jump()
-    dino.gravity()
-    dino.update()
-
-    # implement updatements
-
-    # RENDER GAME HERE
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill((183, 201, 226))
-
-    # RENDER GAME HERE
-    moveBy = dino.speed
-    ground.render()
-    for obs in obstacles:
-        obs.move()
-        obs.render()
-
-    obstacles[0].remove()
-    check_losing()
-
-    if len(clouds) == 0:
-        Cloud()
-    for cloud in clouds:
-        cloud.update()
-    # pygame.draw.rect(screen, 0, GROUND_RECT)
-    dino.draw()
-
-    font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
-    text = font.render("Score:" + str(round(dino.score)), True, "yellow")
-    screen.blit(text, (0, 0))
-
-    # flip() the display to put your work on screen
-    pygame.display.flip()
-
-    # limits FPS to 60
-    # dt is delta time in seconds since last frame, used for framerate-
-    # independent physics.
-    dt = clock.tick(60) / 1000
-
-pygame.quit()
