@@ -12,6 +12,9 @@ from random import randint
 
 
 img = "img"
+
+# load Logo
+logo_img = pygame.image.load(os.path.join(img, "Logo.png"))
 # Load Dino
 dino_img1 = pygame.image.load(os.path.join(img, "dino", "frame1.png")) # TODO like this on all similar lines
 dino_img2 = pygame.image.load(os.path.join(img, "dino", "frame2.png"))
@@ -87,15 +90,17 @@ class Menu:
         Button(500, 64, 208, 32, "seting", self.main, name="back to menu")
 
         # main menu
-        Button(384, 32, 76, 32, "main", StartGame, name="play")
-        Button(480, 32, 76, 32, "main", StartGame, name="skin")
-        Button(608, 32, 128, 32, "main", self.seting, name="setings")
+        self.logoShow = True
+        Button(350, 50, 76, 32, "main", StartGame, name="play")
+        # Button(480, 32, 76, 32, "main", StartGame, name="skin")
+        Button(350, 95, 128, 32, "main", self.seting, name="setings")
         self.main()
 
     def seting(self) -> None:
         """
         shows only buttons in the settings window
         """
+        self.logoShow = False
         for button in buttons:
             button.show = False
             if button.window == "seting":
@@ -105,6 +110,7 @@ class Menu:
         """
         shows only buttons in the main window
         """
+        self.logoShow = True
         for button in buttons:
             button.show = False
             if button.window == "main":
@@ -347,7 +353,8 @@ clouds = []
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Dino")
-pygame.display.set_icon(pygame.image.load("./img/green cactus.png"))
+pygame.display.set_icon(logo_img)
+logo_img = pygame.transform.scale(logo_img, (153, 134))
 clock = pygame.time.Clock()
 ground = Ground()
 # dino!
@@ -383,6 +390,9 @@ while not menu.startGame:
         cloud.update()
 
     # RENDER GAME HERE
+    if menu.logoShow:
+        screen.blit(logo_img, (150, 45))
+
     for button in buttons:
         button.update()
         button.render()
