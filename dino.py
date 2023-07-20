@@ -10,16 +10,18 @@ import pygame.draw_py
 # Get the current working directory
 # img = os.path.dirname(
 #    os.path.abspath("/Users/patetoman/Documents/Git/dino/img/cloud.png")
-#)
+# )
 
 
 img = "img"
 
 # load Logo
 logo_img = pygame.image.load(os.path.join(img, "Logo.png"))
-#font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
+# font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
 # Load Dino
-dino_img1 = pygame.image.load(os.path.join(img, "dino", "frame1.png")) # TODO like this on all similar lines
+dino_img1 = pygame.image.load(
+    os.path.join(img, "dino", "frame1.png")
+)  # TODO like this on all similar lines
 dino_img2 = pygame.image.load(os.path.join(img, "dino", "frame2.png"))
 dino_img3 = pygame.image.load(os.path.join(img, "dino", "frame3.png"))
 # Load ducking Dino
@@ -34,8 +36,10 @@ ditto_img3 = pygame.image.load(os.path.join(img, "ditto", "frame3.png"))
 
 obs_green = pygame.image.load(os.path.join(img, "green cactus.png"))
 obs_yellow = pygame.image.load(os.path.join(img, "yellow cactus.png"))
-green_img = pygame.transform.scale(obs_green,(35, 70))
-yellow_img = pygame.transform.scale(obs_yellow,(35, 70))
+obs_meteor = pygame.image.load(os.path.join(img, "Supreme_Meteor.png"))
+green_img = pygame.transform.scale(obs_green, (30, 60))
+yellow_img = pygame.transform.scale(obs_yellow, (30, 60))
+meteor_img = pygame.transform.scale(obs_meteor, (55, 30))
 
 # Load the image cloud
 Cloud_img = pygame.image.load(os.path.join(img, "cloud.png"))
@@ -57,7 +61,8 @@ STAND_W = 35
 STAND_H = 75
 DUCK_W = 60
 DUCK_H = 50
-prev_x = 1024
+prev_x = 1000
+dt = 0
 
 # CAN's CODE
 # Classes for the game startup menu, buttons, and helper functions for the opening screen
@@ -65,12 +70,12 @@ prev_x = 1024
 
 class Menu:
     """
-    propertes: 
+    propertes:
     running: make false to close the game
     startGame: starts the game
     soundOn: shows if the sound is on
 
-    metods: 
+    metods:
     seting(self) -> None: hides all butons and then shows only seting menu buttons
     main(self) -> None: hides all butons and then shows only main menu buttons
     """
@@ -81,7 +86,7 @@ class Menu:
         # loop variables
         self.running = True
         self.startGame = False
-        
+
         self.setDino()
 
         # Loading all the buttons for
@@ -96,34 +101,34 @@ class Menu:
         # Button(480, 32, 76, 32, "main", StartGame, name="skin")
         Button(350, 95, 140, 32, "main", self.setting, name="settings")
         self.main()
-    
+
     def setDino(self):
-        #standing animations
-        self.run_img1 = pygame.transform.scale(dino_img2,(75, 75))
-        self.run_img2 = pygame.transform.scale(dino_img3,(75, 75))
+        # standing animations
+        self.run_img1 = pygame.transform.scale(dino_img2, (75, 75))
+        self.run_img2 = pygame.transform.scale(dino_img3, (75, 75))
 
-        #ducking animations
-        self.duck_img1 = pygame.transform.scale(dino_ducking_img2,(100, 50))
-        self.duck_img2 = pygame.transform.scale(dino_ducking_img3,(100, 50))
+        # ducking animations
+        self.duck_img1 = pygame.transform.scale(dino_ducking_img2, (100, 50))
+        self.duck_img2 = pygame.transform.scale(dino_ducking_img3, (100, 50))
 
-        #jumping animations
-        self.jump_img1 = pygame.transform.scale(dino_img1,(75, 75))
-        self.jump_img2 = pygame.transform.scale(dino_ducking_img1,(100, 50))
+        # jumping animations
+        self.jump_img1 = pygame.transform.scale(dino_img1, (75, 75))
+        self.jump_img2 = pygame.transform.scale(dino_ducking_img1, (100, 50))
         self.skin = "dino"
-    
+
     def setDitto(self):
-        #standing animations
-        self.run_img1 = pygame.transform.scale(ditto_img2,(75, 81.25))
-        self.run_img2 = pygame.transform.scale(ditto_img3,(75, 81.25))
+        # standing animations
+        self.run_img1 = pygame.transform.scale(ditto_img2, (75, 81.25))
+        self.run_img2 = pygame.transform.scale(ditto_img3, (75, 81.25))
         """
         #ducking animations
         self.duck_img1 = pygame.transform.scale(ditto_ducking_img2,(100, 50))
         self.duck_img2 = pygame.transform.scale(ditto_ducking_img3,(100, 50))
         """
-        #jumping animations
-        self.jump_img1 = pygame.transform.scale(ditto_img1,(75, 81.25))
+        # jumping animations
+        self.jump_img1 = pygame.transform.scale(ditto_img1, (75, 81.25))
         # self.jump_img2 = pygame.transform.scale(ditto_ducking_img1,(100, 50))
-        
+
         self.skin = "ditto"
 
     def setting(self) -> None:
@@ -164,16 +169,17 @@ def skinChange():
 
 class Cloud:
     """
-    propertes: 
+    propertes:
     clouds: a list of all clouds
     x: the x cordinat of the cloud
     y: the y cordinat of the cloud
     nextCloudIn: the time it will take for this cloud to genaret a new one
     Cloud_img: a randomly scaled cloud img
-    methods: 
+    methods:
     render(self) -> None: renders the cloud
     update(self) -> None: moves the cloud on the x directon, if the cloud is out of the window it despawns it, also calls render() and creats new clouds if nextCloudIn is = to 0
     """
+
     def __init__(self, x=1024):
         clouds.append(self)
         self.x = x
@@ -201,12 +207,13 @@ class Cloud:
 
 class Ground:
     """
-    propertes: 
+    propertes:
     x: the x cordinet of the ground
 
-    methods: 
+    methods:
     render(self) -> None: moves the ground and then puts it onto the screen
     """
+
     def __init__(self) -> None:
         self.rect = pygame.Rect(0, START_Y, SCREEN_WIDTH, 20)
         self.x = 0
@@ -220,20 +227,21 @@ class Ground:
 
 class Button:
     """
-    propertes: 
+    propertes:
     buttons: a List of all buttons
     react: the button hitbox (a pygame.rect)
-    coolDown: button coldown to stop instantanus clicking 
-    func: function given to the button to exacute 
+    coolDown: button coldown to stop instantanus clicking
+    func: function given to the button to exacute
     window: which menu window the button is in
     name: the text that is displayed on the button
     mouseOn: boolen that shows if the mous is on the button
     show: shows the button
 
-    methods: 
+    methods:
     render(self) -> None: Renders the button whith text placed on the button
     update(self) -> None: checks if the button is clicked
     """
+
     def __init__(self, x, y, width, height, window, func, name="Button") -> None:
         buttons.append(self)
         self.react = pygame.Rect(x, y, width, height)
@@ -280,46 +288,46 @@ class Button:
 
 
 # Dino class made by Sophie
-
-'''
-plan for obstacle class:
-needs a RECT
-type
-
-dino class needs a "hitting obstacles" thing
-
-how will it generate?
-don't want it to generate entirely randomly
-but we do need some variation
-generate it someplace between 1024 and 2048
-and it moves left 
-can't be too close to any of the other obstacles
-distance?
-helper function - generates a new cactus a randomized but set distance away from the last one
-make loop tht will generate the first couple
-check the first one of that list and delete if its off
-
-rect y = start_y - height
-rect x = randomly generated ig
-'''
 class Obstacle:
     def __init__(self, x):
-        #obstacles.append(self)
+        # obstacles.append(self)
 
-        #randomly determines if the cactus is yellow or green
-        #will change a bit once we add birds
-        self.type = randint(0, 1)
-        if(self.type == 0):
+        # randomly determines if the cactus is yellow or green
+        # will change a bit once we add birds
+
+        self.type = randint(0, 2)
+        if self.type == 0:
             self.image = green_img
-        else:
+            self.box = pygame.Rect(
+                x, START_Y - 60, 30, 60
+            )  # placeholder box for the moment
+        elif self.type == 1:
             self.image = yellow_img
-        #img stuff here:
+            self.box = pygame.Rect(
+                x, START_Y - 60, 30, 60
+            )  # placeholder box for the moment
+        else:
+            new_y = START_Y - 30
+            tier = randint(0, 2)
+            if tier == 1:
+                new_y -= 55
+                # print('mid')
+            else:
+                new_y -= tier * 40
+            self.image = meteor_img
+            self.box = pygame.Rect(x, new_y, 55, 30)  #'''
 
-        self.box = pygame.Rect(x, START_Y -65 -randint(-5, 3), 35, 70) #placeholder box for the moment
+        # this is to test the metors
+        # self.image = meteor_img
+        # self.box = pygame.Rect(x, START_Y-30-55, 55, 30)
+        # img stuff here:
+
+        # self.box = pygame.Rect(x, START_Y -65 -randint(-5, 3), 35, 70) #placeholder box for the moment
 
     def render(self):
-        # pygame.draw.rect(screen, (0, 0, 0), self.box)
+        pygame.draw.rect(screen, (0, 0, 0), self.box)
         screen.blit(self.image, (self.box.x, self.box.y))
+
     def move(self):
         self.box.x -= moveBy * dt
 
@@ -328,27 +336,33 @@ class Obstacle:
             obstacles.remove(self)
             add_obs()
 
+
 def check_losing():
     for obs in obstacles:
         if dino.rect.colliderect(obs.box):
+            # print("hit a box")
             menu.running = False
-            #pygame.quit()
-#adds a new obstacle within a randomized distance of the last one
+            # pygame.quit()
+
+
+# adds a new obstacle within a randomized distance of the last one
 def add_obs():
     global prev_x
-    if len(obstacles)>0:
+    if len(obstacles) > 0:
         prev_x = obstacles[-1].box.x
-    new_x = prev_x + randint(250, 600)
+    new_x = prev_x + randint(250, 600) + dino.speed / 5
     obstacles.append(Obstacle(new_x))
-    #return new_x
+    # return new_x
 
-    prev_x= new_x
+    prev_x = new_x
+
 
 class Dino:
     """
-    propertes: 
-    methods: 
+    propertes:
+    methods:
     """
+
     def __init__(self):
         self.frameTime = 15
         self.usedFrame = menu.run_img1
@@ -365,15 +379,16 @@ class Dino:
         # controls the dino jump (essentially y velocity)
         self.velocityY = 0
 
-        self.speed = 50
+        self.speed = 300
         self.score = 1
 
         # sets up with defaults
         self.rect = pygame.Rect(START_X, START_Y - STAND_H, STAND_W, STAND_H)
+
     # brings the dino up
     def jump(self):
         self.rect.y -= 2
-        self.velocityY = -8  # update as necessary to change the power of the jump
+        self.velocityY = -9  # update as necessary to change the power of the jump
 
     # drags the dino back down if it's in the air
     def gravity(self):
@@ -396,12 +411,12 @@ class Dino:
         elif self.rect.colliderect(ground.rect):
             self.on_ground = True
             self.velocityY = 0
-            self.rect.bottom = ground.rect.top +1
+            self.rect.bottom = ground.rect.top + 1
         else:
             self.on_ground = False
         if not self.on_ground:
             # update as necessary to change the falling speed
-            self.velocityY += 16 * dt
+            self.velocityY += 21 * dt
             # if the dino ducks while jumping, speed increases
             if not self.is_standing:
                 self.velocityY += 64 * dt  # 10 is hardcoded arbitrary extra fall
@@ -409,16 +424,13 @@ class Dino:
             if self.velocityY > 25:
                 self.velocityY = 25
 
-        
-
     def update(self):
         if self.speed <= 500:
-            self.speed += 5 *dt 
-        self.score += (self.speed / 1000)
+            self.speed += 5 * dt
+        self.score += self.speed / 1000
         self.rect.y += self.velocityY
 
         # switches between states
-
 
     # Makes the RECT for the dino
     # self.x is CENTERED
@@ -439,16 +451,18 @@ class Dino:
                 self.usedFrame = menu.run_img1
             if not self.on_ground:
                 self.usedFrame_duck = menu.jump_img2
-            elif self.usedFrame_duck == menu.duck_img1 or self.usedFrame_duck == menu.jump_img2:
+            elif (
+                self.usedFrame_duck == menu.duck_img1
+                or self.usedFrame_duck == menu.jump_img2
+            ):
                 self.usedFrame_duck = menu.duck_img2
             elif self.usedFrame_duck == menu.duck_img2:
                 self.usedFrame_duck = menu.duck_img1
-        
+
         if self.is_standing:
-            screen.blit(self.usedFrame, (self.rect.x - 20, self.rect.y ))
+            screen.blit(self.usedFrame, (self.rect.x - 20, self.rect.y))
         else:
             screen.blit(self.usedFrame_duck, (self.rect.x - 20, self.rect.y))
-
 
 
 # this list will hold all of the objects it is named after.
@@ -460,7 +474,9 @@ clouds = []
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("                                                                                                                                                                                                                                                                            Dino Dash")
+pygame.display.set_caption(
+    "                                                                                                                                                                                                                                                                            Dino Dash"
+)
 pygame.display.set_icon(logo_img)
 logo_img = pygame.transform.scale(logo_img, (153, 134))
 clock = pygame.time.Clock()
@@ -473,7 +489,7 @@ obstacles = []
 for i in range(6):
     add_obs()
 
-dt = 0
+
 moveBy = 50
 
 
@@ -517,7 +533,7 @@ while not menu.startGame:
 
 
 dino = Dino()
-dino.speed = 150
+dino.speed = 300
 
 while menu.running:
     # poll for events
@@ -530,19 +546,20 @@ while menu.running:
     keys = pygame.key.get_pressed()
 
     # First check if dino is on the ground and standing
-    
-
 
     # make updatements to dino
     dino.is_standing = not keys[pygame.K_DOWN]
 
-    if (keys[pygame.K_SPACE] or keys[pygame.K_UP]) and dino.on_ground and dino.is_standing:
+    if (
+        (keys[pygame.K_SPACE] or keys[pygame.K_UP])
+        and dino.on_ground
+        and dino.is_standing
+    ):
         dino.jump()
     dino.gravity()
     dino.update()
 
     # implement updatements
-
 
     # RENDER GAME HERE
     # fill the screen with a color to wipe away anything from last frame
@@ -568,8 +585,6 @@ while menu.running:
     font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
     text = font.render("Score:" + str(round(dino.score)), True, "yellow")
     screen.blit(text, (0, 0))
-
-    
 
     # flip() the display to put your work on screen
     pygame.display.flip()
