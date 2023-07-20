@@ -19,9 +19,7 @@ img = "img"
 logo_img = pygame.image.load(os.path.join(img, "Logo.png"))
 # font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
 # Load Dino
-dino_img1 = pygame.image.load(
-    os.path.join(img, "dino", "frame1.png")
-)  # TODO like this on all similar lines
+dino_img1 = pygame.image.load(os.path.join(img, "dino", "frame1.png")) 
 dino_img2 = pygame.image.load(os.path.join(img, "dino", "frame2.png"))
 dino_img3 = pygame.image.load(os.path.join(img, "dino", "frame3.png"))
 # Load ducking Dino
@@ -33,6 +31,7 @@ dino_ducking_img3 = pygame.image.load(os.path.join(img, "dino", "duck_frame3.png
 ditto_img1 = pygame.image.load(os.path.join(img, "ditto", "frame1.png"))
 ditto_img2 = pygame.image.load(os.path.join(img, "ditto", "frame2.png"))
 ditto_img3 = pygame.image.load(os.path.join(img, "ditto", "frame3.png"))
+ditto_ducking_img = pygame.image.load(os.path.join(img, "ditto", "duck_frame.png"))
 
 obs_green = pygame.image.load(os.path.join(img, "green cactus.png"))
 obs_yellow = pygame.image.load(os.path.join(img, "yellow cactus.png"))
@@ -120,14 +119,14 @@ class Menu:
         # standing animations
         self.run_img1 = pygame.transform.scale(ditto_img2, (75, 81.25))
         self.run_img2 = pygame.transform.scale(ditto_img3, (75, 81.25))
-        """
+
         #ducking animations
-        self.duck_img1 = pygame.transform.scale(ditto_ducking_img2,(100, 50))
-        self.duck_img2 = pygame.transform.scale(ditto_ducking_img3,(100, 50))
-        """
+        self.duck_img1 = pygame.transform.scale(ditto_ducking_img,(100, 50))
+        self.duck_img2 = pygame.transform.scale(ditto_ducking_img,(100, 50))
+
         # jumping animations
         self.jump_img1 = pygame.transform.scale(ditto_img1, (75, 81.25))
-        # self.jump_img2 = pygame.transform.scale(ditto_ducking_img1,(100, 50))
+        self.jump_img2 = pygame.transform.scale(ditto_ducking_img,(100, 50))
 
         self.skin = "ditto"
 
