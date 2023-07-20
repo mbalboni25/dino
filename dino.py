@@ -295,6 +295,8 @@ class Obstacle:
         # will change a bit once we add birds
 
         self.type = randint(0, 2)
+        if dino.score <= 1000:
+            self.type = randint(0, 1)
         if self.type == 0:
             self.image = green_img
             self.box = pygame.Rect(
@@ -491,6 +493,12 @@ class Dino:
 def reset():
     dino.reset()
 
+    global obstacles
+    global prev_x
+    obstacles = []
+    prev_x = 1000
+    for i in range(6):
+        add_obs()
 
 def main():
     reset()
@@ -528,6 +536,11 @@ def main():
         # RENDER GAME HERE
         dino.moveBy = dino.speed
         ground.render()
+        if len(clouds) == 0:
+            Cloud()
+        for cloud in clouds:
+            cloud.update()
+
         for obs in obstacles:
             obs.move()
             obs.render()
@@ -535,10 +548,7 @@ def main():
         obstacles[0].remove()
         check_losing()
 
-        if len(clouds) == 0:
-            Cloud()
-        for cloud in clouds:
-            cloud.update()
+
         # pygame.draw.rect(screen, 0, GROUND_RECT)
         dino.draw()
 
