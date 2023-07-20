@@ -48,11 +48,10 @@ START_Y = 220
 COLOR = (30, 230, 230)  # color is just a temporary replacement for the actual dino imgs
 
 # hit boxes for the standing and ducking dino
-STAND_W = 75
+STAND_W = 35
 STAND_H = 75
-DUCK_W = 100
+DUCK_W = 60
 DUCK_H = 50
-
 prev_x = 1024
 
 # CAN's CODE
@@ -166,7 +165,7 @@ class Cloud:
         if self.x <= -150:
             clouds.remove(self)
         else:
-            self.x -= (8 * (100 / (self.y + 50)) + dino.speed) * dt
+            self.x -= (8 * (100 / (self.y + 50)) + moveBy) * dt
             self.nextCloudIn -= 1
             if len(clouds) < 10:
                 if self.nextCloudIn == 0:
@@ -189,8 +188,8 @@ class Ground:
         self.x = 0
 
     def render(self) -> None:
-        self.x -= (dino.speed) * dt
-        if self.x <= -1024:
+        self.x -= moveBy * dt
+        if self.x <= -1025:
             self.x = 0
         screen.blit(scaled_ground_img, (self.x, 187))
 
@@ -295,10 +294,10 @@ class Obstacle:
         self.box = pygame.Rect(x, START_Y-70, 35, 70) #placeholder box for the moment
 
     def render(self):
-        #pygame.draw.rect(screen, (0, 0, 0), self.box)
+        pygame.draw.rect(screen, (0, 0, 0), self.box)
         screen.blit(self.image, (self.box.x, self.box.y))
     def move(self):
-        self.box.x -= dino.speed*dt
+        self.box.x -= moveBy * dt
 
     def remove(self):
         if self.box.x < -100:
@@ -343,13 +342,14 @@ class Dino:
         self.velocityY = 0
 
         self.speed = 50
-        self.score = 0
+        self.score = 1
 
         # sets up with defaults
         self.rect = pygame.Rect(START_X, START_Y - STAND_H, STAND_W, STAND_H)
     # brings the dino up
     def jump(self):
-        self.velocityY = -7  # update as necessary to change the power of the jump
+        self.rect.y -= 2
+        self.velocityY = -8  # update as necessary to change the power of the jump
 
     # drags the dino back down if it's in the air
     def gravity(self):
@@ -367,16 +367,20 @@ class Dino:
                 self.rect.y += 25
             self.was_standing = False
         self.on_ground = False
-        if self.rect.colliderect(ground.rect):
+        if self.on_ground:
+            pass
+        elif self.rect.colliderect(ground.rect):
             self.on_ground = True
             self.velocityY = 0
-            self.rect.bottom = ground.rect.top
-        elif not self.on_ground:
+            self.rect.bottom = ground.rect.top +1
+        else:
+            self.on_ground = False
+        if not self.on_ground:
             # update as necessary to change the falling speed
-            self.velocityY += 11 * dt
+            self.velocityY += 16 * dt
             # if the dino ducks while jumping, speed increases
             if not self.is_standing:
-                self.velocityY += 32 * dt  # 10 is hardcoded arbitrary extra fall
+                self.velocityY += 64 * dt  # 10 is hardcoded arbitrary extra fall
             # speed limit
             if self.velocityY > 25:
                 self.velocityY = 25
@@ -386,8 +390,7 @@ class Dino:
     def update(self):
         if self.speed <= 500:
             self.speed += 5 *dt 
-            print(self.speed)
-        self.score += (self.speed // 100)
+        self.score += (self.speed / 500)
         self.rect.y += self.velocityY
 
         # switches between states
@@ -400,7 +403,7 @@ class Dino:
 
     def draw(self):
         # simple for now but may update later when we add the images of the dino
-        #pygame.draw.rect(screen, self.image, self.rect)
+        pygame.draw.rect(screen, self.image, self.rect)
         self.frameTime -= 1
         if self.frameTime <= 0:
             self.frameTime = 10
@@ -418,9 +421,9 @@ class Dino:
                 self.usedFrame_duck = menu.duck_img1
         
         if self.is_standing:
-            screen.blit(self.usedFrame, (self.rect.x, self.rect.y ))
+            screen.blit(self.usedFrame, (self.rect.x - 20, self.rect.y ))
         else:
-            screen.blit(self.usedFrame_duck, (self.rect.x, self.rect.y))
+            screen.blit(self.usedFrame_duck, (self.rect.x - 20, self.rect.y))
 
 
 
@@ -448,6 +451,7 @@ for i in range(6):
     add_obs()
 
 dt = 0
+moveBy = 50
 
 
 # sets up the ground rect spanning the entire width of the screen
@@ -520,7 +524,14 @@ while menu.running:
     screen.fill((183, 201, 226))
 
     # RENDER GAME HERE
+    moveBy = dino.speed
     ground.render()
+    for obs in obstacles:
+        obs.move()
+        obs.render()
+
+    obstacles[0].remove()
+    check_losing()
 
     if len(clouds) == 0:
         Cloud()
@@ -533,13 +544,7 @@ while menu.running:
     text = font.render("Score:" + str(round(dino.score)), True, "yellow")
     screen.blit(text, (0, 0))
 
-    for obs in obstacles:
-        obs.move()
-        obs.render()
-
-    obstacles[0].remove()
-    print(len(obstacles))
-    check_losing()
+    
 
     # flip() the display to put your work on screen
     pygame.display.flip()
