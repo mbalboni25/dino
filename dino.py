@@ -295,10 +295,10 @@ class Obstacle:
         self.box = pygame.Rect(x, START_Y-70, 35, 70) #placeholder box for the moment
 
     def render(self):
-        pygame.draw.rect(screen, (0, 0, 0), self.box)
+        #pygame.draw.rect(screen, (0, 0, 0), self.box)
         screen.blit(self.image, (self.box.x, self.box.y))
     def move(self):
-        self.box.x -= (40+dino.speed/100)*dt
+        self.box.x -= dino.speed*dt
 
     def remove(self):
         if self.box.x < -100:
@@ -331,7 +331,7 @@ class Dino:
         self.usedFrame = menu.run_img1
         self.usedFrame_duck = menu.duck_img1
         # how fast dino moves in the x direction
-        
+
         # Attribute initalizers
         self.image = COLOR
         # switches between ducking and standing states
@@ -342,11 +342,14 @@ class Dino:
         # controls the dino jump (essentially y velocity)
         self.velocityY = 0
 
+        self.speed = 50
+        self.score = 0
+
         # sets up with defaults
         self.rect = pygame.Rect(START_X, START_Y - STAND_H, STAND_W, STAND_H)
     # brings the dino up
     def jump(self):
-        self.velocityY = -8  # update as necessary to change the power of the jump
+        self.velocityY = -7  # update as necessary to change the power of the jump
 
     # drags the dino back down if it's in the air
     def gravity(self):
@@ -370,7 +373,7 @@ class Dino:
             self.rect.bottom = ground.rect.top
         elif not self.on_ground:
             # update as necessary to change the falling speed
-            self.velocityY += 10 * dt
+            self.velocityY += 9 * dt
             # if the dino ducks while jumping, speed increases
             if not self.is_standing:
                 self.velocityY += 32 * dt  # 10 is hardcoded arbitrary extra fall
@@ -449,7 +452,6 @@ dt = 0
 
 # sets up the ground rect spanning the entire width of the screen
 
-dino.speed = 1
 while not menu.startGame:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -486,6 +488,7 @@ while not menu.startGame:
     # independent physics.
     dt = clock.tick(60) / 1000
 
+dino.speed = 150
 
 while menu.running:
     # poll for events
