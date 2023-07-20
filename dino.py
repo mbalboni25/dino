@@ -17,6 +17,7 @@ img = "img"
 
 # load Logo
 logo_img = pygame.image.load(os.path.join(img, "Logo.png"))
+#font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
 # Load Dino
 dino_img1 = pygame.image.load(os.path.join(img, "dino", "frame1.png")) # TODO like this on all similar lines
 dino_img2 = pygame.image.load(os.path.join(img, "dino", "frame2.png"))
@@ -165,7 +166,7 @@ class Cloud:
         if self.x <= -150:
             clouds.remove(self)
         else:
-            self.x -= (8 * (100 / (self.y + 50)) * dino.speed / 100) * dt
+            self.x -= (8 * (100 / (self.y + 50)) + dino.speed) * dt
             self.nextCloudIn -= 1
             if len(clouds) < 10:
                 if self.nextCloudIn == 0:
@@ -188,7 +189,7 @@ class Ground:
         self.x = 0
 
     def render(self) -> None:
-        self.x -= (10 + dino.speed / 100) * dt
+        self.x -= (dino.speed) * dt
         if self.x <= -1024:
             self.x = 0
         screen.blit(scaled_ground_img, (self.x, 187))
@@ -330,7 +331,7 @@ class Dino:
         self.usedFrame = menu.run_img1
         self.usedFrame_duck = menu.duck_img1
         # how fast dino moves in the x direction
-
+        
         # Attribute initalizers
         self.image = COLOR
         # switches between ducking and standing states
@@ -380,6 +381,10 @@ class Dino:
         
 
     def update(self):
+        if self.speed <= 500:
+            self.speed += 5 *dt 
+            print(self.speed)
+        self.score += (self.speed // 100)
         self.rect.y += self.velocityY
 
         # switches between states
@@ -444,7 +449,7 @@ dt = 0
 
 # sets up the ground rect spanning the entire width of the screen
 
-
+dino.speed = 1
 while not menu.startGame:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -520,6 +525,10 @@ while menu.running:
         cloud.update()
     # pygame.draw.rect(screen, 0, GROUND_RECT)
     dino.draw()
+
+    font = pygame.font.Font("./img/PressStart2P-Regular.ttf", 16)
+    text = font.render("Score:" + str(round(dino.score)), True, "yellow")
+    screen.blit(text, (0, 0))
 
     for obs in obstacles:
         obs.move()
