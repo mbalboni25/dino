@@ -7,18 +7,13 @@ import pygame.draw_py
 
 # Initializing imgs
 
-# Get the current working directory
-# img = os.path.dirname(
-#    os.path.abspath("/Users/patetoman/Documents/Git/dino/img/cloud.png")
-# )
-
 
 img = "img"
 
 # load Logo
 logo_img = pygame.image.load(os.path.join(img, "Logo.png"))
 # Load Dino
-dino_img1 = pygame.image.load(os.path.join(img, "dino", "frame1.png")) 
+dino_img1 = pygame.image.load(os.path.join(img, "dino", "frame1.png"))
 dino_img2 = pygame.image.load(os.path.join(img, "dino", "frame2.png"))
 dino_img3 = pygame.image.load(os.path.join(img, "dino", "frame3.png"))
 # Load ducking Dino
@@ -47,7 +42,7 @@ ground_img = pygame.image.load(os.path.join(img, "ground.png"))
 # resize rhe ground
 scaled_ground_img = pygame.transform.scale(ground_img, (2048, 69.5))
 
-#music setup (testing mode)
+# music setup (testing mode)
 pygame.mixer.init()
 step = pygame.mixer.Sound(os.path.join(img, "running.mp3"))
 music = pygame.mixer.music.load(os.path.join(img, "game music.mp3"))
@@ -130,15 +125,16 @@ class Menu:
         self.run_img1 = pygame.transform.scale(ditto_img2, (75, 81.25))
         self.run_img2 = pygame.transform.scale(ditto_img3, (75, 81.25))
 
-        #ducking animations
-        self.duck_img1 = pygame.transform.scale(ditto_ducking_img,(100, 50))
-        self.duck_img2 = pygame.transform.scale(ditto_ducking_img,(100, 50))
+        # ducking animations
+        self.duck_img1 = pygame.transform.scale(ditto_ducking_img, (100, 50))
+        self.duck_img2 = pygame.transform.scale(ditto_ducking_img, (100, 50))
 
         # jumping animations
         self.jump_img1 = pygame.transform.scale(ditto_img1, (75, 81.25))
-        self.jump_img2 = pygame.transform.scale(ditto_ducking_img,(100, 50))
+        self.jump_img2 = pygame.transform.scale(ditto_ducking_img, (100, 50))
 
         self.skin = "ditto"
+
     def gameOver(self):
         self.window = "game over"
         self.logoShow = False
@@ -146,7 +142,6 @@ class Menu:
             button.show = False
             if button.window == "game over":
                 button.show = True
-
 
     def setting(self) -> None:
         """
@@ -362,7 +357,7 @@ def check_losing():
     for obs in obstacles:
         if dino.rect.colliderect(obs.box):
             # print("hit a box")
-            #step.stop()
+            # step.stop()
             menu.startGame = False
             # pygame.quit()
 
@@ -452,7 +447,7 @@ class Dino:
         menu.score += self.speed / 1000
         self.rect.y += self.velocityY
 
-        if round(menu.score)%400 == 0:
+        if round(menu.score) % 400 == 0:
             print("passed checkpoint")
             ping.play()
         # switches between states
@@ -466,8 +461,8 @@ class Dino:
         # simple for now but may update later when we add the images of the dino
         # pygame.draw.rect(screen, self.image, self.rect)
         self.frameTime -= 1
-        #if self.frameTime == 5:
-            #step.stop()
+        # if self.frameTime == 5:
+        # step.stop()
         if self.frameTime <= 0:
             self.frameTime = 10
             if not self.on_ground:
@@ -532,6 +527,7 @@ def reset():
         add_obs()
     menu.gameOver()
 
+
 def main():
     while menu.startGame:
         # poll for events
@@ -578,11 +574,9 @@ def main():
 
         obstacles[0].remove()
 
-        #checks score for ping
-
+        # checks score for ping
 
         check_losing()
-
 
         # pygame.draw.rect(screen, 0, GROUND_RECT)
         dino.draw()
@@ -631,7 +625,7 @@ for i in range(6):
 
 # sets up the ground rect spanning the entire width of the screen
 
-#pygame.mixer.music.play(loops=-1)
+# pygame.mixer.music.play(loops=-1)
 step.set_volume(1)
 pygame.mixer.music.set_volume(0.5)
 while menu.running:
@@ -640,7 +634,6 @@ while menu.running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             menu.running = False
-
 
     # updates the player (location)
 
