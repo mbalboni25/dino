@@ -448,7 +448,6 @@ class Dino:
         self.rect.y += self.velocityY
 
         if round(menu.score) % 400 == 0:
-            print("passed checkpoint")
             ping.play()
         # switches between states
 
